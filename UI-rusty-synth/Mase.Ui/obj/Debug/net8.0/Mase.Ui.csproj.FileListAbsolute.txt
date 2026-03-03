@@ -73,3 +73,4 @@
 /home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/obj/Debug/net8.0/Mase.Ui.pdb
 /home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/obj/Debug/net8.0/Mase.Ui.genruntimeconfig.cache
 /home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/obj/Debug/net8.0/ref/Mase.Ui.dll
+/home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/obj/Debug/net8.0/Mase.Ui.sourcelink.json

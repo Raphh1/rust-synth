@@ -15,23 +15,62 @@
 
     <Grid RowDefinitions="Auto, *, Auto">
 
-     <Border Grid.Row="0" Background="#2D2D30" Padding="10" BorderBrush="#3E3E42" BorderThickness="0,0,0,1">
+        <!-- TOP: Transport Section -->
+        <Border Grid.Row="0" Background="#2D2D30" Padding="10" BorderBrush="#3E3E42" BorderThickness="0,0,0,1">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <Button Content="Open Piano Roll" Command="{Binding OpenPianoRollCommand}" Background="#007ACC" Foreground="White"/>
+                <TextBlock Text="TRANSPORT" Foreground="#AAAAAA" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+                <Button Content="{Binding PlayButtonText}" 
+                        Command="{Binding PlayCommand}" 
+                        Background="{Binding PlayButtonColor}" 
+                        Foreground="White"/>
+                <Button Content="Stop ⏹" Command="{Binding StopCommand}" Background="#3E3E42" Foreground="#FF6B6B"/>
+                <Button Content="Record ⏺" Background="#3E3E42" Foreground="#FF6B6B"/>
                 <Separator Background="#555" Width="1" Margin="5,0"/>
-                <Button Content="Play" Background="#3E3E42" Foreground="LightGreen"/>
-                <Button Content="Stop" Background="#3E3E42" Foreground="Red"/>
+                <Button Content="Open Piano Roll Window" Command="{Binding OpenPianoRollCommand}" Background="#007ACC" Foreground="White"/>
             </StackPanel>
         </Border>
 
-        <!-- CENTER: Patch Editor Area -->
-        <Border Grid.Row="1" Background="#1E1E1E">
-            <TextBlock Text="Main Patch Area (Rack / Modules)" 
-                       Foreground="#666" 
-                       FontSize="24"
-                       HorizontalAlignment="Center" 
-                       VerticalAlignment="Center"/>
-        </Border>
+        <!-- CENTER: Main Workspace -->
+        <Grid Grid.Row="1" RowDefinitions="*, 4, *">
+            
+            <!-- TOP HALF: Parameters and Waveform -->
+            <Grid Grid.Row="0" ColumnDefinitions="300, 4, *">
+                
+                <!-- LEFT: Parameters Section -->
+                <Border Grid.Column="0" Background="#252526" BorderBrush="#3E3E42" BorderThickness="1" CornerRadius="4" Margin="5">
+                    <Grid RowDefinitions="Auto, *">
+                        <Border Background="#333337" CornerRadius="3,3,0,0" Padding="10,5">
+                            <TextBlock Text="PARAMETERS" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12"/>
+                        </Border>
+                        <TextBlock Grid.Row="1" Text="Knobs &amp; Sliders..." Foreground="#666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+                
+                <GridSplitter Grid.Column="1" Background="#1E1E1E" ResizeDirection="Columns"/>
+                
+                <!-- RIGHT: Waveform Section -->
+                <Border Grid.Column="2" Background="#1E1E1E" BorderBrush="#3E3E42" BorderThickness="1" CornerRadius="4" Margin="5">
+                    <Grid RowDefinitions="Auto, *">
+                        <Border Background="#333337" CornerRadius="3,3,0,0" Padding="10,5">
+                            <TextBlock Text="WAVEFORM" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12"/>
+                        </Border>
+                        <TextBlock Grid.Row="1" Text="Waveform Display" Foreground="#666" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <GridSplitter Grid.Row="1" Background="#1E1E1E" ResizeDirection="Rows"/>
+
+            <!-- BOTTOM HALF: Piano Roll Section -->
+            <Border Grid.Row="2" Background="#202020" BorderBrush="#3E3E42" BorderThickness="1" CornerRadius="4" Margin="5">
+                <Grid RowDefinitions="Auto, *">
+                    <Border Background="#333337" CornerRadius="3,3,0,0" Padding="10,5">
+                        <TextBlock Text="PIANO ROLL" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12"/>
+                    </Border>
+                    <TextBlock Grid.Row="1" Text="Piano Roll Grid" Foreground="#666" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+        </Grid>
 
         <!-- BOTTOM: Status Bar -->
         <Border Grid.Row="2" Background="#007ACC" Padding="5,2">
