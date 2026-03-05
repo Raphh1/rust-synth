@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Mase.Ui.Services;
 
 namespace Mase.Ui.ViewModels;
-
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IpcService _ipcService;

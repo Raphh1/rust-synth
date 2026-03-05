@@ -1476,28 +1476,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\raphael.cau\\.nuget\\packages\\": {}
+    "/home/raphaelcau/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "\\\\wsl.localhost\\Ubuntu\\home\\raphaelcau\\rust-synth\\UI-rusty-synth\\Mase.Ui\\Mase.Ui.csproj",
+      "projectUniqueName": "/home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/Mase.Ui.csproj",
       "projectName": "Mase.Ui",
-      "projectPath": "\\\\wsl.localhost\\Ubuntu\\home\\raphaelcau\\rust-synth\\UI-rusty-synth\\Mase.Ui\\Mase.Ui.csproj",
-      "packagesPath": "C:\\Users\\raphael.cau\\.nuget\\packages\\",
-      "outputPath": "\\\\wsl.localhost\\Ubuntu\\home\\raphaelcau\\rust-synth\\UI-rusty-synth\\Mase.Ui\\obj\\",
+      "projectPath": "/home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/Mase.Ui.csproj",
+      "packagesPath": "/home/raphaelcau/.nuget/packages/",
+      "outputPath": "/home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\raphael.cau\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "/home/raphaelcau/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {},
-        "https://repository.it.corp/repository/NuGet-NetCore-Official/": {},
-        "https://repository.it.corp/repository/nuget-netcore/": {},
-        "https://repository.it.corp/repository/nugetcoregroupcdiscount/": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
@@ -1556,7 +1553,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.124/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
