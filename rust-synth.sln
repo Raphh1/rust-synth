@@ -1,0 +1,29 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI-rusty-synth", "UI-rusty-synth", "{BB252D28-6F9C-96BF-6037-91047AE2C2E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mase.Ui", "UI-rusty-synth\Mase.Ui\Mase.Ui.csproj", "{90D0484E-B1FE-E255-CCF7-2D6F21C52E13}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90D0484E-B1FE-E255-CCF7-2D6F21C52E13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D0484E-B1FE-E255-CCF7-2D6F21C52E13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D0484E-B1FE-E255-CCF7-2D6F21C52E13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D0484E-B1FE-E255-CCF7-2D6F21C52E13}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{90D0484E-B1FE-E255-CCF7-2D6F21C52E13} = {BB252D28-6F9C-96BF-6037-91047AE2C2E9}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {50DF4EC9-91CE-4514-A468-2B8887428C54}
+	EndGlobalSection
+EndGlobal
