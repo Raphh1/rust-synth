@@ -1,26 +1,29 @@
 {
   "format": 1,
   "restore": {
-    "/home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/Mase.Ui.csproj": {}
+    "\\\\wsl.localhost\\Ubuntu\\home\\raphaelcau\\rust-synth\\UI-rusty-synth\\Mase.Ui\\Mase.Ui.csproj": {}
   },
   "projects": {
-    "/home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/Mase.Ui.csproj": {
+    "\\\\wsl.localhost\\Ubuntu\\home\\raphaelcau\\rust-synth\\UI-rusty-synth\\Mase.Ui\\Mase.Ui.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/Mase.Ui.csproj",
+        "projectUniqueName": "\\\\wsl.localhost\\Ubuntu\\home\\raphaelcau\\rust-synth\\UI-rusty-synth\\Mase.Ui\\Mase.Ui.csproj",
         "projectName": "Mase.Ui",
-        "projectPath": "/home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/Mase.Ui.csproj",
-        "packagesPath": "/home/raphaelcau/.nuget/packages/",
-        "outputPath": "/home/raphaelcau/rust-synth/UI-rusty-synth/Mase.Ui/obj/",
+        "projectPath": "\\\\wsl.localhost\\Ubuntu\\home\\raphaelcau\\rust-synth\\UI-rusty-synth\\Mase.Ui\\Mase.Ui.csproj",
+        "packagesPath": "C:\\Users\\raphael.cau\\.nuget\\packages\\",
+        "outputPath": "\\\\wsl.localhost\\Ubuntu\\home\\raphaelcau\\rust-synth\\UI-rusty-synth\\Mase.Ui\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/raphaelcau/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\raphael.cau\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://repository.it.corp/repository/NuGet-NetCore-Official/": {},
+          "https://repository.it.corp/repository/nuget-netcore/": {},
+          "https://repository.it.corp/repository/nugetcoregroupcdiscount/": {}
         },
         "frameworks": {
           "net8.0": {
@@ -79,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/lib/dotnet/sdk/8.0.124/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

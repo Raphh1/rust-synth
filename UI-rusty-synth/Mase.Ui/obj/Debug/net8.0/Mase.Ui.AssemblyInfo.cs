@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Mase.Ui")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0f5d2ec7d2267f2ac6e984c45b38e876682e4e78")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+43393a84525d70a78dbd48e34a1ff57b98310149")]
 [assembly: System.Reflection.AssemblyProductAttribute("Mase.Ui")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Mase.Ui")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
