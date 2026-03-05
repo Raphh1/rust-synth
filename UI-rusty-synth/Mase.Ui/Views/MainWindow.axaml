@@ -17,46 +17,53 @@
 
         <!-- TOP: Transport Section -->
         <Border Grid.Row="0" Background="#2D2D30" Padding="10" BorderBrush="#3E3E42" BorderThickness="0,0,0,1">
-          <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto" VerticalAlignment="Center">
-            <StackPanel Orientation="Horizontal" Spacing="10" Grid.Column="0">
-                <TextBlock Text="TRANSPORT" Foreground="#AAAAAA" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
-                <Button Content="{Binding PlayButtonText}" 
-                        Command="{Binding PlayCommand}" 
-                        Background="{Binding PlayButtonColor}" 
-                        Foreground="White"/>
-                <Button Content="Stop ⏹" Command="{Binding StopCommand}" Background="#3E3E42" Foreground="#FF6B6B"/>
-                <Button Content="Record ⏺" Background="#3E3E42" Foreground="#FF6B6B"/>
-                <Separator Background="#555" Width="1" Margin="5,0"/>
-                <Button Content="Open Piano Roll Window" Command="{Binding OpenPianoRollCommand}" Background="#007ACC" Foreground="White"/>
-            </StackPanel>
+            <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Spacing="10" Grid.Column="0">
+                    <TextBlock Text="TRANSPORT" Foreground="#AAAAAA" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+                    <Button Content="{Binding PlayButtonText}"
+                            Command="{Binding PlayCommand}"
+                            Background="{Binding PlayButtonColor}"
+                            Foreground="White"/>
+                    <Button Content="Stop ⏹" Command="{Binding StopCommand}" Background="#3E3E42" Foreground="#FF6B6B"/>
+                    <Button Content="Record ⏺" Background="#3E3E42" Foreground="#FF6B6B"/>
+                    <Separator Background="#555" Width="1" Margin="5,0"/>
+                    <Button Content="Open Piano Roll Window" Command="{Binding OpenPianoRollCommand}" Background="#007ACC" Foreground="White"/>
+                </StackPanel>
 
-            <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-              <TextBlock Text="Engine:" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-              <Border Background="{Binding EngineStateColor}" CornerRadius="10" Padding="10,4">
-                <TextBlock Text="{Binding EngineStateText}" Foreground="White" FontWeight="SemiBold"/>
-              </Border>
-            </StackPanel>
-          </Grid>
+                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Engine:" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                    <Border Background="{Binding EngineStateColor}" CornerRadius="10" Padding="10,4">
+                        <TextBlock Text="{Binding EngineStateText}" Foreground="White" FontWeight="SemiBold"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <!-- CENTER: Main Workspace -->
         <Grid Grid.Row="1" RowDefinitions="*, 4, *">
-            
+
             <!-- TOP HALF: Parameters and Waveform -->
             <Grid Grid.Row="0" ColumnDefinitions="300, 4, *">
-                
+
                 <!-- LEFT: Parameters Section -->
                 <Border Grid.Column="0" Background="#252526" BorderBrush="#3E3E42" BorderThickness="1" CornerRadius="4" Margin="5">
                     <Grid RowDefinitions="Auto, *">
                         <Border Background="#333337" CornerRadius="3,3,0,0" Padding="10,5">
                             <TextBlock Text="PARAMETERS" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12"/>
                         </Border>
-                        <TextBlock Grid.Row="1" Text="Knobs &amp; Sliders..." Foreground="#666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                        <StackPanel Grid.Row="1" Margin="12" Spacing="8">
+                            <TextBlock Text="Cutoff" Foreground="#DDDDDD"/>
+                            <Slider Minimum="20"
+                                    Maximum="20000"
+                                    Value="{Binding Cutoff, Mode=TwoWay}" />
+                            <TextBlock Text="{Binding CutoffDisplay}" Foreground="#AAAAAA"/>
+                        </StackPanel>
                     </Grid>
                 </Border>
-                
+
                 <GridSplitter Grid.Column="1" Background="#1E1E1E" ResizeDirection="Columns"/>
-                
+
                 <!-- RIGHT: Waveform Section -->
                 <Border Grid.Column="2" Background="#1E1E1E" BorderBrush="#3E3E42" BorderThickness="1" CornerRadius="4" Margin="5">
                     <Grid RowDefinitions="Auto, *">

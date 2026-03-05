@@ -29,12 +29,16 @@ public partial class MainViewModel : ViewModelBase
     private bool _isPlaying = false;
 
     [ObservableProperty]
-
     private string _engineStateText = "Stopped";
 
     [ObservableProperty]
-
     private string _engineStateColor = "#de0013ff"; 
+
+    [ObservableProperty]
+    private double _cutoff = 1000.0;
+
+    [ObservableProperty]
+    private string _cutoffDisplay = "Cutoff: 1000 Hz";
 
     [RelayCommand]
     private void OpenPianoRoll()
@@ -104,6 +108,33 @@ public partial class MainViewModel : ViewModelBase
             else
             {
                 StatusMessage = "Error: Failed to communicate with engine.";
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    private async Task SendSetParamAsync (string paramName, double value)
+    {
+        try
+        {
+            StatusMessage = $"Setting {paramName} to {value}...";
+            
+            // Generer un ID de requête basique
+            string requestId = Guid.NewGuid().ToString();
+            
+            // Communication avec le backend Rust via le service IPC
+            bool success = await _ipcService.SendCommandAsync("SetParam", requestId, new { name = paramName, value });
+
+            if (success)
+            {
+                StatusMessage = $"{paramName} set to {value}.";
+            }
+            else
+            {
+                StatusMessage = $"Error: Failed to set {paramName}.";
             }
         }
         catch (Exception ex)
