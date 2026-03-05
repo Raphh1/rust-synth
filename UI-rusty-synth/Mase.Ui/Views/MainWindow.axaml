@@ -17,7 +17,8 @@
 
         <!-- TOP: Transport Section -->
         <Border Grid.Row="0" Background="#2D2D30" Padding="10" BorderBrush="#3E3E42" BorderThickness="0,0,0,1">
-            <StackPanel Orientation="Horizontal" Spacing="10">
+          <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Spacing="10" Grid.Column="0">
                 <TextBlock Text="TRANSPORT" Foreground="#AAAAAA" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
                 <Button Content="{Binding PlayButtonText}" 
                         Command="{Binding PlayCommand}" 
@@ -28,6 +29,14 @@
                 <Separator Background="#555" Width="1" Margin="5,0"/>
                 <Button Content="Open Piano Roll Window" Command="{Binding OpenPianoRollCommand}" Background="#007ACC" Foreground="White"/>
             </StackPanel>
+
+            <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+              <TextBlock Text="Engine:" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+              <Border Background="{Binding EngineStateColor}" CornerRadius="10" Padding="10,4">
+                <TextBlock Text="{Binding EngineStateText}" Foreground="White" FontWeight="SemiBold"/>
+              </Border>
+            </StackPanel>
+          </Grid>
         </Border>
 
         <!-- CENTER: Main Workspace -->

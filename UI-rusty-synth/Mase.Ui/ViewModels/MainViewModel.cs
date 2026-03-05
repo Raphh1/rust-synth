@@ -25,9 +25,16 @@ public partial class MainViewModel : ViewModelBase
     private string _playButtonText = "Play ▶";
 
     [ObservableProperty]
-    private string _playButtonColor = "#4CAF50"; // Light green
-
+    private string _playButtonColor = "#4CAF50";
     private bool _isPlaying = false;
+
+    [ObservableProperty]
+
+    private string _engineStateText = "Stopped";
+
+    [ObservableProperty]
+
+    private string _engineStateColor = "#de0013ff"; 
 
     [RelayCommand]
     private void OpenPianoRoll()
@@ -38,12 +45,8 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task PlayAsync()
     {
-        if (_isPlaying)
-        {
-            // Already playing, do nothing or handle Stop
-            return;
-        }
-
+        if (_isPlaying) return;
+        
         try
         {
             StatusMessage = "Starting playback...";
@@ -60,7 +63,7 @@ public partial class MainViewModel : ViewModelBase
                 
                 // Feedback visuel: changer texte et couleur (gris ou vert plus vif)
                 PlayButtonText = "Playing ▶▶";
-                PlayButtonColor = "#2E7D32"; // Darker green
+                PlayButtonColor = "#2E7D32"; 
                 StatusMessage = "Engine: Playing";
             }
             else
@@ -77,11 +80,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private async Task StopAsync()
     {
-        if (!_isPlaying)
-        {
-            // Already stopped, do nothing
-            return;
-        }
+        if (!_isPlaying) return;
 
         try
         {
@@ -99,7 +98,7 @@ public partial class MainViewModel : ViewModelBase
                 
                 // Feedback visuel: revenir a l'etat initial pour le bouton play
                 PlayButtonText = "Play ▶";
-                PlayButtonColor = "#4CAF50"; // Light green
+                PlayButtonColor = "#4CAF50"; 
                 StatusMessage = "Engine: Stopped";
             }
             else
