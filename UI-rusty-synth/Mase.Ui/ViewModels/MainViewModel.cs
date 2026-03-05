@@ -40,6 +40,11 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private string _cutoffDisplay = "Cutoff: 1000 Hz";
 
+    partial void OnCutoffChanged(double value)
+{
+    CutoffDisplay = $"{value:F0} Hz";
+}
+
     [RelayCommand]
     private void OpenPianoRoll()
     {
