@@ -1,3 +1,5 @@
+mod ipc;
+
 fn main() {
-    println!("Hello, world!");
+    ipc::run().expect("Failed to run IPC server");
 }
