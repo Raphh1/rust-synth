@@ -12,6 +12,7 @@ public partial class MainWindow : Window
         MainPianoRoll.NoteAdded   += OnNoteAdded;
         MainPianoRoll.NoteDeleted += OnNoteDeleted;
         MainPianoRoll.NoteMoved   += OnNoteMoved;
+        MainPianoRoll.NoteResized += OnNoteResized;
     }
 
     private async void OnNoteAdded(object? sender, NoteAddedEventArgs e)
@@ -34,6 +35,13 @@ public partial class MainWindow : Window
     {
         if (DataContext is not MainViewModel vm) return;
         await vm.MoveNoteAsync(e.NoteId, e.NewPitch, e.NewBeat);
+        MainPianoRoll.InvalidateVisual();
+    }
+
+    private async void OnNoteResized(object? sender, NoteResizedEventArgs e)
+    {
+        if (DataContext is not MainViewModel vm) return;
+        await vm.ResizeNoteAsync(e.NoteId, e.NewLength);
         MainPianoRoll.InvalidateVisual();
     }
 }

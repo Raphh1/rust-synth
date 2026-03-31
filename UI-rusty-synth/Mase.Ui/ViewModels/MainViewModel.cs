@@ -191,6 +191,19 @@ public partial class MainViewModel : ViewModelBase
         catch (Exception ex) { StatusMessage = $"Error: {ex.Message}"; }
     }
 
+    public async Task ResizeNoteAsync(string noteId, double newLength)
+    {
+        try
+        {
+            bool success = await _ipcService.SendCommandAsync("ResizeNote", Guid.NewGuid().ToString(),
+                new { id = noteId, length = newLength });
+
+            if (success)
+                StatusMessage = $"Note redimensionnée : {newLength} beat(s)";
+        }
+        catch (Exception ex) { StatusMessage = $"Error: {ex.Message}"; }
+    }
+
     private async Task SendSetParamAsync (string paramName, double value)
     {
         try
