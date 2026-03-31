@@ -42,6 +42,68 @@ public partial class MainViewModel : ViewModelBase
 
     public List<NoteModel> Notes { get; } = new();
 
+    // ─── Waveform ─────────────────────────────────────────────────────────────
+
+    public double[] WaveformTable { get; private set; } = Waveforms.Sine();
+
+    private bool _isEditMode = false;
+
+    public event Action<bool>? EditModeChanged;
+
+    [ObservableProperty]
+    private string _waveformModeText = "Edit";
+
+    [ObservableProperty]
+    private string _waveformModeColor = "#3E3E42";
+
+    private bool CanEditWaveform() => !_isPlaying;
+
+    [RelayCommand(CanExecute = nameof(CanEditWaveform))]
+    private void ToggleWaveformEdit()
+    {
+        _isEditMode     = !_isEditMode;
+        WaveformModeText  = _isEditMode ? "View"    : "Edit";
+        WaveformModeColor = _isEditMode ? "#1565C0" : "#3E3E42";
+        StatusMessage     = _isEditMode ? "Waveform : mode édition." : "Waveform : mode lecture.";
+        EditModeChanged?.Invoke(_isEditMode);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanEditWaveform))]
+    private async Task ResetWaveformAsync()
+    {
+        WaveformTable = Waveforms.Sine();
+        EditModeChanged?.Invoke(_isEditMode);
+        await WavetableSetAsync(WaveformTable);
+        StatusMessage = "Waveform réinitialisée (sine).";
+    }
+
+    [RelayCommand(CanExecute = nameof(CanEditWaveform))]
+    private async Task LoadPresetAsync(string preset)
+    {
+        WaveformTable = preset switch
+        {
+            "sine"     => Waveforms.Sine(),
+            "square"   => Waveforms.Square(),
+            "saw"      => Waveforms.Saw(),
+            "triangle" => Waveforms.Triangle(),
+            _          => WaveformTable
+        };
+        EditModeChanged?.Invoke(_isEditMode);
+        await WavetableSetAsync(WaveformTable);
+        StatusMessage = $"Waveform : {preset}.";
+    }
+
+    public async Task WavetableSetAsync(double[] table)
+    {
+        try
+        {
+            WaveformTable = table;
+            await _ipcService.SendCommandAsync("WavetableSet", Guid.NewGuid().ToString(),
+                new { oscId = "osc1", table });
+        }
+        catch (Exception ex) { StatusMessage = $"Error: {ex.Message}"; }
+    }
+
     [ObservableProperty]
     private string _engineStateText = "Stopped";
 
@@ -114,6 +176,8 @@ public partial class MainViewModel : ViewModelBase
                 EngineStateText = "Playing";
                 EngineStateColor = "#4CAF50";
                 StatusMessage = "Engine: Playing";
+                ToggleWaveformEditCommand.NotifyCanExecuteChanged();
+                ResetWaveformCommand.NotifyCanExecuteChanged();
             }
             else
             {
@@ -149,6 +213,8 @@ public partial class MainViewModel : ViewModelBase
                 EngineStateText = "Stopped";
                 EngineStateColor = "#de0013ff";
                 StatusMessage = "Engine: Stopped";
+                ToggleWaveformEditCommand.NotifyCanExecuteChanged();
+                ResetWaveformCommand.NotifyCanExecuteChanged();
             }
             else
             {
