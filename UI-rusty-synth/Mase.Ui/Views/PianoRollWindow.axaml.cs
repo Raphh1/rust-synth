@@ -48,7 +48,9 @@ public class PianoRollWindow : Window
             Notes     = vm.Notes
         };
 
-        _roll.NoteAdded += OnNoteAdded;
+        _roll.NoteAdded   += OnNoteAdded;
+        _roll.NoteDeleted += OnNoteDeleted;
+        _roll.NoteMoved   += OnNoteMoved;
 
         Grid.SetRow(header, 0);
         Grid.SetRow(_roll,  1);
@@ -63,6 +65,19 @@ public class PianoRollWindow : Window
     {
         await _vm.AddNoteAsync(e.Pitch, e.Beat);
         _roll.Notes = _vm.Notes;
+        _roll.InvalidateVisual();
+    }
+
+    private async void OnNoteDeleted(object? sender, NoteDeletedEventArgs e)
+    {
+        await _vm.DeleteNoteAsync(e.NoteId);
+        _roll.Notes = _vm.Notes;
+        _roll.InvalidateVisual();
+    }
+
+    private async void OnNoteMoved(object? sender, NoteMovedEventArgs e)
+    {
+        await _vm.MoveNoteAsync(e.NoteId, e.NewPitch, e.NewBeat);
         _roll.InvalidateVisual();
     }
 }

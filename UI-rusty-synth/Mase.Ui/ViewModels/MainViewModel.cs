@@ -159,6 +159,38 @@ public partial class MainViewModel : ViewModelBase
         }
     }
 
+    public async Task DeleteNoteAsync(string noteId)
+    {
+        try
+        {
+            var note = Notes.Find(n => n.Id == noteId);
+            if (note == null) return;
+
+            bool success = await _ipcService.SendCommandAsync("DeleteNote", Guid.NewGuid().ToString(),
+                new { id = noteId });
+
+            if (success)
+            {
+                Notes.Remove(note);
+                StatusMessage = "Note supprimée.";
+            }
+        }
+        catch (Exception ex) { StatusMessage = $"Error: {ex.Message}"; }
+    }
+
+    public async Task MoveNoteAsync(string noteId, int newPitch, int newBeat)
+    {
+        try
+        {
+            bool success = await _ipcService.SendCommandAsync("MoveNote", Guid.NewGuid().ToString(),
+                new { id = noteId, pitch = newPitch, start = newBeat });
+
+            if (success)
+                StatusMessage = $"Note déplacée : pitch {newPitch}, beat {newBeat}";
+        }
+        catch (Exception ex) { StatusMessage = $"Error: {ex.Message}"; }
+    }
+
     private async Task SendSetParamAsync (string paramName, double value)
     {
         try

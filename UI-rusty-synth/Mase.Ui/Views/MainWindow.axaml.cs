@@ -9,7 +9,9 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        MainPianoRoll.NoteAdded += OnNoteAdded;
+        MainPianoRoll.NoteAdded   += OnNoteAdded;
+        MainPianoRoll.NoteDeleted += OnNoteDeleted;
+        MainPianoRoll.NoteMoved   += OnNoteMoved;
     }
 
     private async void OnNoteAdded(object? sender, NoteAddedEventArgs e)
@@ -17,6 +19,21 @@ public partial class MainWindow : Window
         if (DataContext is not MainViewModel vm) return;
         await vm.AddNoteAsync(e.Pitch, e.Beat);
         MainPianoRoll.Notes = vm.Notes;
+        MainPianoRoll.InvalidateVisual();
+    }
+
+    private async void OnNoteDeleted(object? sender, NoteDeletedEventArgs e)
+    {
+        if (DataContext is not MainViewModel vm) return;
+        await vm.DeleteNoteAsync(e.NoteId);
+        MainPianoRoll.Notes = vm.Notes;
+        MainPianoRoll.InvalidateVisual();
+    }
+
+    private async void OnNoteMoved(object? sender, NoteMovedEventArgs e)
+    {
+        if (DataContext is not MainViewModel vm) return;
+        await vm.MoveNoteAsync(e.NoteId, e.NewPitch, e.NewBeat);
         MainPianoRoll.InvalidateVisual();
     }
 }
