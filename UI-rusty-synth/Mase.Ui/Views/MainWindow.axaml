@@ -67,6 +67,12 @@
                                         Value="{Binding Cutoff, Mode=TwoWay}"/>
                                 <TextBlock Text="{Binding CutoffDisplay}" Foreground="#AAAAAA"/>
 
+                                <!-- Resonance -->
+                                <TextBlock Text="Resonance" Foreground="#DDDDDD" Margin="0,4,0,0"/>
+                                <Slider Minimum="0.0" Maximum="1.0"
+                                        Value="{Binding Resonance, Mode=TwoWay}"/>
+                                <TextBlock Text="{Binding ResonanceDisplay}" Foreground="#AAAAAA"/>
+
                                 <Separator Background="#3E3E42" Height="1" Margin="0,4"/>
 
                                 <!-- Envelope -->

@@ -117,9 +117,22 @@ public partial class MainViewModel : ViewModelBase
     private string _cutoffDisplay = "Cutoff: 1000 Hz";
 
     partial void OnCutoffChanged(double value)
-{
-    CutoffDisplay = $"Cutoff: {value:F0} Hz";
-}
+    {
+        CutoffDisplay = $"Cutoff: {value:F0} Hz";
+        _ = SendSetParamAsync("filter.cutoff", value);
+    }
+
+    [ObservableProperty]
+    private double _resonance = 0.5;
+
+    [ObservableProperty]
+    private string _resonanceDisplay = "Resonance: 0.50";
+
+    partial void OnResonanceChanged(double value)
+    {
+        ResonanceDisplay = $"Resonance: {value:F2}";
+        _ = SendSetParamAsync("filter.resonance", value);
+    }
 
     [RelayCommand]
     private async Task ToggleLoopAsync()
