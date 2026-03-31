@@ -42,7 +42,7 @@ public partial class MainViewModel : ViewModelBase
 
     partial void OnCutoffChanged(double value)
 {
-    CutoffDisplay = $"{value:F0} Hz";
+    CutoffDisplay = $"Cutoff: {value:F0} Hz";
 }
 
     [RelayCommand]
