@@ -310,6 +310,53 @@ public partial class MainViewModel : ViewModelBase
         catch (Exception ex) { StatusMessage = $"Error: {ex.Message}"; }
     }
 
+    // ─── LFO ──────────────────────────────────────────────────────────────────
+
+    private string _lfoShape  = "sine";
+    private string _lfoTarget = "cutoff";
+
+    [ObservableProperty] private double _lfoRate  = 1.0;
+    [ObservableProperty] private double _lfoDepth = 0.5;
+    [ObservableProperty] private string _lfoRateDisplay  = "Rate: 1.00 Hz";
+    [ObservableProperty] private string _lfoDepthDisplay = "Depth: 0.50";
+
+    // Shape button colors
+    [ObservableProperty] private string _lfoSineColor     = "#1565C0";
+    [ObservableProperty] private string _lfoSquareColor   = "#2D2D30";
+    [ObservableProperty] private string _lfoTriColor      = "#2D2D30";
+    [ObservableProperty] private string _lfoSawColor      = "#2D2D30";
+
+    // Target button colors
+    [ObservableProperty] private string _lfoCutoffColor   = "#1565C0";
+    [ObservableProperty] private string _lfoPitchColor    = "#2D2D30";
+    [ObservableProperty] private string _lfoVolumeColor   = "#2D2D30";
+
+    partial void OnLfoRateChanged (double v) { LfoRateDisplay  = $"Rate: {v:F2} Hz"; _ = SendSetParamAsync("lfo.rate",  v); }
+    partial void OnLfoDepthChanged(double v) { LfoDepthDisplay = $"Depth: {v:F2}";   _ = SendSetParamAsync("lfo.depth", v); }
+
+    [RelayCommand]
+    private async Task SetLfoShape(string shape)
+    {
+        _lfoShape      = shape;
+        LfoSineColor   = shape == "sine"     ? "#1565C0" : "#2D2D30";
+        LfoSquareColor = shape == "square"   ? "#1565C0" : "#2D2D30";
+        LfoTriColor    = shape == "triangle" ? "#1565C0" : "#2D2D30";
+        LfoSawColor    = shape == "saw"      ? "#1565C0" : "#2D2D30";
+        double numeric = shape switch { "square" => 1, "triangle" => 2, "saw" => 3, _ => 0 };
+        await SendSetParamAsync("lfo.shape", numeric);
+    }
+
+    [RelayCommand]
+    private async Task SetLfoTarget(string target)
+    {
+        _lfoTarget       = target;
+        LfoCutoffColor   = target == "cutoff" ? "#1565C0" : "#2D2D30";
+        LfoPitchColor    = target == "pitch"  ? "#1565C0" : "#2D2D30";
+        LfoVolumeColor   = target == "volume" ? "#1565C0" : "#2D2D30";
+        double numeric   = target switch { "pitch" => 1, "volume" => 2, _ => 0 };
+        await SendSetParamAsync("lfo.target", numeric);
+    }
+
     // ─── Envelope ─────────────────────────────────────────────────────────────
 
     [ObservableProperty] private double _attack  = 0.01;

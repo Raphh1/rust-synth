@@ -102,6 +102,45 @@
                                     <TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding Release, StringFormat='{}{0:F2}s'}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
                                 </Grid>
 
+                                <Separator Background="#3E3E42" Height="1" Margin="0,4"/>
+
+                                <!-- LFO -->
+                                <TextBlock Text="LFO" Foreground="#CCCCCC" FontWeight="Bold" FontSize="11"/>
+
+                                <TextBlock Text="Shape" Foreground="#AAAAAA" FontSize="10"/>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <Button Content="~ Sine"  Command="{Binding SetLfoShapeCommand}" CommandParameter="sine"
+                                            Background="{Binding LfoSineColor}"   Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="⊓ Sqr"   Command="{Binding SetLfoShapeCommand}" CommandParameter="square"
+                                            Background="{Binding LfoSquareColor}" Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="△ Tri"   Command="{Binding SetLfoShapeCommand}" CommandParameter="triangle"
+                                            Background="{Binding LfoTriColor}"    Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="/ Saw"   Command="{Binding SetLfoShapeCommand}" CommandParameter="saw"
+                                            Background="{Binding LfoSawColor}"    Foreground="White" Padding="6,2" FontSize="10"/>
+                                </StackPanel>
+
+                                <TextBlock Text="Target" Foreground="#AAAAAA" FontSize="10"/>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <Button Content="Cutoff" Command="{Binding SetLfoTargetCommand}" CommandParameter="cutoff"
+                                            Background="{Binding LfoCutoffColor}"  Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="Pitch"  Command="{Binding SetLfoTargetCommand}" CommandParameter="pitch"
+                                            Background="{Binding LfoPitchColor}"   Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="Volume" Command="{Binding SetLfoTargetCommand}" CommandParameter="volume"
+                                            Background="{Binding LfoVolumeColor}"  Foreground="White" Padding="6,2" FontSize="10"/>
+                                </StackPanel>
+
+                                <Grid ColumnDefinitions="46,*,40" RowDefinitions="Auto,Auto,Auto,Auto" Margin="0,4,0,0">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Rate"  Foreground="#AAAAAA" FontSize="10" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="0" Grid.Column="1" Minimum="0.1" Maximum="20.0"
+                                              Value="{Binding LfoRate, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding LfoRateDisplay}"  Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Depth" Foreground="#AAAAAA" FontSize="10" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="2" Grid.Column="1" Minimum="0.0" Maximum="1.0"
+                                              Value="{Binding LfoDepth, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding LfoDepthDisplay}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                </Grid>
+
                             </StackPanel>
                         </ScrollViewer>
                     </Grid>
