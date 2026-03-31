@@ -69,10 +69,10 @@ public partial class MainViewModel : ViewModelBase
             if (success)
             {
                 _isPlaying = true;
-                
-                // Feedback visuel: changer texte et couleur (gris ou vert plus vif)
                 PlayButtonText = "Playing ▶▶";
-                PlayButtonColor = "#2E7D32"; 
+                PlayButtonColor = "#2E7D32";
+                EngineStateText = "Playing";
+                EngineStateColor = "#4CAF50";
                 StatusMessage = "Engine: Playing";
             }
             else
@@ -104,10 +104,10 @@ public partial class MainViewModel : ViewModelBase
             if (success)
             {
                 _isPlaying = false;
-                
-                // Feedback visuel: revenir a l'etat initial pour le bouton play
                 PlayButtonText = "Play ▶";
-                PlayButtonColor = "#4CAF50"; 
+                PlayButtonColor = "#4CAF50";
+                EngineStateText = "Stopped";
+                EngineStateColor = "#de0013ff";
                 StatusMessage = "Engine: Stopped";
             }
             else
