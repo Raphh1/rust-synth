@@ -2,9 +2,11 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mase.Ui.Models;
 using Mase.Ui.Services;
 using Mase.Ui.Views;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Mase.Ui.ViewModels;
@@ -31,6 +33,8 @@ public partial class MainViewModel : ViewModelBase
     private string _playButtonColor = "#4CAF50";
     private bool _isPlaying = false;
 
+    public List<NoteModel> Notes { get; } = new();
+
     [ObservableProperty]
     private string _engineStateText = "Stopped";
 
@@ -51,7 +55,7 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void OpenPianoRoll()
     {
-        var window = new PianoRollWindow();
+        var window = new PianoRollWindow(this);
         if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } main })
             window.Show(main);
         else
@@ -122,6 +126,31 @@ public partial class MainViewModel : ViewModelBase
             else
             {
                 StatusMessage = "Error: Failed to communicate with engine.";
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Error: {ex.Message}";
+        }
+    }
+
+    public async Task AddNoteAsync(int pitch, int beat)
+    {
+        try
+        {
+            var note = new NoteModel { Pitch = pitch, Start = beat };
+            string requestId = Guid.NewGuid().ToString();
+
+            bool success = await _ipcService.SendCommandAsync("AddNote", requestId, new { note = new { pitch, start = beat, length = note.Length, velocity = note.Velocity } });
+
+            if (success)
+            {
+                Notes.Add(note);
+                StatusMessage = $"Note ajoutée : pitch {pitch}, beat {beat}";
+            }
+            else
+            {
+                StatusMessage = "Error: Failed to add note.";
             }
         }
         catch (Exception ex)

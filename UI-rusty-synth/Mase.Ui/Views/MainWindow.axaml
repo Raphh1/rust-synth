@@ -85,7 +85,7 @@
                     <Border Background="#333337" CornerRadius="3,3,0,0" Padding="10,5">
                         <TextBlock Text="PIANO ROLL" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12"/>
                     </Border>
-                    <controls:PianoRollGrid Grid.Row="1"/>
+                    <controls:PianoRollGrid Grid.Row="1" x:Name="MainPianoRoll"/>
                 </Grid>
             </Border>
         </Grid>
