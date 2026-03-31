@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:Mase.Ui.ViewModels"
+        xmlns:controls="using:Mase.Ui.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -84,7 +85,7 @@
                     <Border Background="#333337" CornerRadius="3,3,0,0" Padding="10,5">
                         <TextBlock Text="PIANO ROLL" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12"/>
                     </Border>
-                    <TextBlock Grid.Row="1" Text="Piano Roll Grid" Foreground="#666" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <controls:PianoRollGrid Grid.Row="1"/>
                 </Grid>
             </Border>
         </Grid>

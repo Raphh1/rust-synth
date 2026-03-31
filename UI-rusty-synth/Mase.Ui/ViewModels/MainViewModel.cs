@@ -1,8 +1,11 @@
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Mase.Ui.Services;
+using Mase.Ui.Views;
 using System;
 using System.Threading.Tasks;
-using Mase.Ui.Services;
 
 namespace Mase.Ui.ViewModels;
 public partial class MainViewModel : ViewModelBase
@@ -48,7 +51,13 @@ public partial class MainViewModel : ViewModelBase
     [RelayCommand]
     private void OpenPianoRoll()
     {
-        StatusMessage = "Opening Piano Roll...";
+        var window = new PianoRollWindow();
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime { MainWindow: { } main })
+            window.Show(main);
+        else
+            window.Show();
+
+        StatusMessage = "Piano Roll ouvert.";
     }
 
     [RelayCommand]
