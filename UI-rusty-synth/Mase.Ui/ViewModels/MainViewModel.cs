@@ -32,6 +32,13 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private string _playButtonColor = "#4CAF50";
     private bool _isPlaying = false;
+    private bool _isLooping = false;
+
+    [ObservableProperty]
+    private string _loopButtonText = "Loop ↩";
+
+    [ObservableProperty]
+    private string _loopButtonColor = "#3E3E42";
 
     public List<NoteModel> Notes { get; } = new();
 
@@ -51,6 +58,26 @@ public partial class MainViewModel : ViewModelBase
 {
     CutoffDisplay = $"Cutoff: {value:F0} Hz";
 }
+
+    [RelayCommand]
+    private async Task ToggleLoopAsync()
+    {
+        _isLooping = !_isLooping;
+
+        bool success = await _ipcService.SendCommandAsync("LoopToggle", Guid.NewGuid().ToString(),
+            new { enabled = _isLooping });
+
+        if (success)
+        {
+            LoopButtonText  = _isLooping ? "Loop ↩ ON"  : "Loop ↩";
+            LoopButtonColor = _isLooping ? "#FF8F00"     : "#3E3E42";
+            StatusMessage   = _isLooping ? "Loop activé." : "Loop désactivé.";
+        }
+        else
+        {
+            _isLooping = !_isLooping; // revert
+        }
+    }
 
     [RelayCommand]
     private void OpenPianoRoll()
