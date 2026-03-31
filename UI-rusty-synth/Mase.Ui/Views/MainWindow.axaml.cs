@@ -15,8 +15,9 @@ public partial class MainWindow : Window
         MainPianoRoll.NoteMoved   += OnNoteMoved;
         MainPianoRoll.NoteResized += OnNoteResized;
 
-        WaveformCtrl.TableChanged += OnTableChanged;
-        DataContextChanged        += OnDataContextChanged;
+        WaveformCtrl.TableChanged     += OnTableChanged;
+        EnvelopeCtrl.EnvelopeChanged  += OnEnvelopeChanged;
+        DataContextChanged            += OnDataContextChanged;
     }
 
     // ─── Waveform ─────────────────────────────────────────────────────────────
@@ -34,6 +35,37 @@ public partial class MainWindow : Window
             WaveformCtrl.Mode  = isEdit ? WaveformMode.Edit : WaveformMode.View;
             WaveformCtrl.InvalidateVisual();
         };
+
+        // Sync envelope control with initial values
+        EnvelopeCtrl.A = vm.Attack;
+        EnvelopeCtrl.D = vm.Decay;
+        EnvelopeCtrl.S = vm.Sustain;
+        EnvelopeCtrl.R = vm.Release;
+
+        vm.PropertyChanged += (_, args) =>
+        {
+            if (_envelopeSyncing) return; // avoid feedback loop
+            switch (args.PropertyName)
+            {
+                case nameof(vm.Attack):  EnvelopeCtrl.A = vm.Attack;  break;
+                case nameof(vm.Decay):   EnvelopeCtrl.D = vm.Decay;   break;
+                case nameof(vm.Sustain): EnvelopeCtrl.S = vm.Sustain; break;
+                case nameof(vm.Release): EnvelopeCtrl.R = vm.Release; break;
+            }
+        };
+    }
+
+    private bool _envelopeSyncing = false;
+
+    private void OnEnvelopeChanged(double a, double d, double s, double r)
+    {
+        if (DataContext is not MainViewModel vm) return;
+        _envelopeSyncing = true;
+        vm.Attack  = a;
+        vm.Decay   = d;
+        vm.Sustain = s;
+        vm.Release = r;
+        _envelopeSyncing = false;
     }
 
     private async void OnTableChanged(double[] table)

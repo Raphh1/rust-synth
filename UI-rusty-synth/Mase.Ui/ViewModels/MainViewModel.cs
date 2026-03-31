@@ -297,6 +297,18 @@ public partial class MainViewModel : ViewModelBase
         catch (Exception ex) { StatusMessage = $"Error: {ex.Message}"; }
     }
 
+    // ─── Envelope ─────────────────────────────────────────────────────────────
+
+    [ObservableProperty] private double _attack  = 0.01;
+    [ObservableProperty] private double _decay   = 0.1;
+    [ObservableProperty] private double _sustain = 0.7;
+    [ObservableProperty] private double _release = 0.3;
+
+    partial void OnAttackChanged (double v) => _ = SendSetParamAsync("envelope.attack",  v);
+    partial void OnDecayChanged  (double v) => _ = SendSetParamAsync("envelope.decay",   v);
+    partial void OnSustainChanged(double v) => _ = SendSetParamAsync("envelope.sustain", v);
+    partial void OnReleaseChanged(double v) => _ = SendSetParamAsync("envelope.release", v);
+
     private async Task SendSetParamAsync (string paramName, double value)
     {
         try

@@ -58,13 +58,46 @@
                             <TextBlock Text="PARAMETERS" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12"/>
                         </Border>
 
-                        <StackPanel Grid.Row="1" Margin="12" Spacing="8">
-                            <TextBlock Text="Cutoff" Foreground="#DDDDDD"/>
-                            <Slider Minimum="20"
-                                    Maximum="20000"
-                                    Value="{Binding Cutoff, Mode=TwoWay}" />
-                            <TextBlock Text="{Binding CutoffDisplay}" Foreground="#AAAAAA"/>
-                        </StackPanel>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="12" Spacing="12">
+
+                                <!-- Cutoff -->
+                                <TextBlock Text="Cutoff" Foreground="#DDDDDD"/>
+                                <Slider Minimum="20" Maximum="20000"
+                                        Value="{Binding Cutoff, Mode=TwoWay}"/>
+                                <TextBlock Text="{Binding CutoffDisplay}" Foreground="#AAAAAA"/>
+
+                                <Separator Background="#3E3E42" Height="1" Margin="0,4"/>
+
+                                <!-- Envelope -->
+                                <TextBlock Text="ENVELOPE" Foreground="#CCCCCC" FontWeight="Bold" FontSize="11"/>
+                                <controls:EnvelopeControl x:Name="EnvelopeCtrl" Height="100"/>
+
+                                <Grid ColumnDefinitions="30,*,36" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,4,0,0">
+                                    <!-- Attack -->
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="A" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="0" Grid.Column="1" Minimum="0.001" Maximum="2.0"
+                                              Value="{Binding Attack, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Attack, StringFormat='{}{0:F2}s'}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                    <!-- Decay -->
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="D" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="2" Grid.Column="1" Minimum="0.001" Maximum="2.0"
+                                              Value="{Binding Decay, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Decay, StringFormat='{}{0:F2}s'}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                    <!-- Sustain -->
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="S" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="4" Grid.Column="1" Minimum="0.0" Maximum="1.0"
+                                              Value="{Binding Sustain, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding Sustain, StringFormat='{}{0:F2}'}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                    <!-- Release -->
+                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="R" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="6" Grid.Column="1" Minimum="0.001" Maximum="5.0"
+                                              Value="{Binding Release, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding Release, StringFormat='{}{0:F2}s'}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                </Grid>
+
+                            </StackPanel>
+                        </ScrollViewer>
                     </Grid>
                 </Border>
 
