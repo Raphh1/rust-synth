@@ -28,6 +28,6 @@ impl TransportState {
     }
     
     fn is_stopped(&self) -> bool {
-        *self == TransportState::Stopped
+            *self == TransportState::Stopped
     }
 }
