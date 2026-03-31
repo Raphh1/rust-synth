@@ -33,6 +33,28 @@
                             Foreground="White"/>
                     <Button Content="Record ⏺" Background="#3E3E42" Foreground="#FF6B6B"/>
                     <Separator Background="#555" Width="1" Margin="5,0"/>
+                    <TextBlock Text="BPM" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    <Button Content="-" Command="{Binding BpmDownCommand}" Background="#3E3E42" Foreground="White" Width="24" Padding="0"/>
+                    <TextBox Text="{Binding BpmText, Mode=TwoWay}"
+                             Width="52" TextAlignment="Center" VerticalAlignment="Center"
+                             Foreground="White" CaretBrush="White"
+                             BorderBrush="#555" BorderThickness="1" Padding="2,0">
+                        <TextBox.Styles>
+                            <Style Selector="TextBox /template/ Border#PART_BorderElement">
+                                <Setter Property="Background" Value="#1E1E1E"/>
+                            </Style>
+                            <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+                                <Setter Property="Background" Value="#1E1E1E"/>
+                                <Setter Property="BorderBrush" Value="#007ACC"/>
+                            </Style>
+                            <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+                                <Setter Property="Background" Value="#1E1E1E"/>
+                            </Style>
+                        </TextBox.Styles>
+                    </TextBox>
+                    <Button Content="+" Command="{Binding BpmUpCommand}"   Background="#3E3E42" Foreground="White" Width="24" Padding="0"/>
+                    <Slider Minimum="40" Maximum="250" Value="{Binding Bpm, Mode=TwoWay}" Width="100" VerticalAlignment="Center"/>
+                    <Separator Background="#555" Width="1" Margin="5,0"/>
                     <Button Content="Open Piano Roll Window" Command="{Binding OpenPianoRollCommand}" Background="#007ACC" Foreground="White"/>
                 </StackPanel>
 

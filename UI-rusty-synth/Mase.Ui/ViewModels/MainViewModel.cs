@@ -35,6 +35,38 @@ public partial class MainViewModel : ViewModelBase
     private bool _isLooping = false;
 
     [ObservableProperty]
+    private double _bpm = 120.0;
+
+    [ObservableProperty]
+    private string _bpmText = "120";
+
+    private bool _bpmSyncing = false;
+
+    partial void OnBpmChanged(double value)
+    {
+        _ = SendSetParamAsync("transport.bpm", value);
+        if (_bpmSyncing) return;
+        _bpmSyncing = true;
+        BpmText = $"{value:F0}";
+        _bpmSyncing = false;
+    }
+
+    partial void OnBpmTextChanged(string value)
+    {
+        if (_bpmSyncing) return;
+        if (double.TryParse(value, System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture, out double parsed))
+        {
+            _bpmSyncing = true;
+            Bpm = Math.Clamp(parsed, 40, 250);
+            _bpmSyncing = false;
+        }
+    }
+
+    [RelayCommand] private void BpmUp()   => Bpm = Math.Clamp(Bpm + 1, 40, 250);
+    [RelayCommand] private void BpmDown() => Bpm = Math.Clamp(Bpm - 1, 40, 250);
+
+    [ObservableProperty]
     private string _loopButtonText = "Loop ↩";
 
     [ObservableProperty]
