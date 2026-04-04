@@ -83,6 +83,14 @@
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="12" Spacing="12">
 
+                                <!-- Portamento -->
+                                <TextBlock Text="Portamento" Foreground="#DDDDDD"/>
+                                <Slider Minimum="0.0" Maximum="2.0"
+                                        Value="{Binding Portamento, Mode=TwoWay}"/>
+                                <TextBlock Text="{Binding PortamentoDisplay}" Foreground="#AAAAAA"/>
+
+                                <Separator Background="#3E3E42" Height="1" Margin="0,4"/>
+
                                 <!-- Cutoff -->
                                 <TextBlock Text="Cutoff" Foreground="#DDDDDD"/>
                                 <Slider Minimum="20" Maximum="20000"

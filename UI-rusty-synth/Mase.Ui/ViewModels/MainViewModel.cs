@@ -342,6 +342,17 @@ public partial class MainViewModel : ViewModelBase
         catch (Exception ex) { StatusMessage = $"Error: {ex.Message}"; }
     }
 
+    // ─── Portamento ───────────────────────────────────────────────────────────
+
+    [ObservableProperty] private double _portamento = 0.0;
+    [ObservableProperty] private string _portamentoDisplay = "Off";
+
+    partial void OnPortamentoChanged(double value)
+    {
+        PortamentoDisplay = value < 0.001 ? "Off" : $"{value:F2}s";
+        _ = SendSetParamAsync("portamento.time", value);
+    }
+
     // ─── LFO ──────────────────────────────────────────────────────────────────
 
     private string _lfoShape  = "sine";
