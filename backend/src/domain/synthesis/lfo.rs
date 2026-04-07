@@ -8,7 +8,7 @@ pub enum LfoShape {
 }
 
 impl LfoShape {
-    /// Depuis la valeur numérique envoyée par l'IPC (lfo.shape)
+    /// Depuis la valeur numrique envoye par l'IPC (lfo.shape)
     /// 0=sine, 1=square, 2=triangle, 3=saw
     pub fn from_f64(v: f64) -> Self {
         match v as u8 {
@@ -40,9 +40,9 @@ impl LfoTarget {
 }
 
 /// LFO (Low Frequency Oscillator).
-/// Génère une valeur de modulation [-1.0, 1.0] à chaque tick.
-/// Ne fait PAS partie du DspGraph — il est consulté par l'engine
-/// pour moduler les paramètres (cutoff, pitch, volume).
+/// Gnre une valeur de modulation [-1.0, 1.0]  chaque tick.
+/// Ne fait PAS partie du DspGraph  il est consult par l'engine
+/// pour moduler les paramtres (cutoff, pitch, volume).
 #[derive(Debug)]
 pub struct Lfo {
     rate: f64,    // Hz
@@ -127,7 +127,7 @@ mod tests {
         let mut lfo = Lfo::new(1.0, 1.0, LfoShape::Square, LfoTarget::Pitch);
         for _ in 0..44100 {
             let v = lfo.tick(44100.0);
-            assert!(v == 1.0 || v == -1.0, "square should be ±1, got {}", v);
+            assert!(v == 1.0 || v == -1.0, "square should be 1, got {}", v);
         }
     }
 

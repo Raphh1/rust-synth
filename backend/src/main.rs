@@ -1,8 +1,8 @@
-#![allow(dead_code)]
+#![allow(warnings)]
 mod application;
 mod domain;
 mod ipc;
 
 fn main() {
-    ipc::run().expect("Failed to run IPC server");
+    application::engine::run().expect("Failed to run engine");
 }

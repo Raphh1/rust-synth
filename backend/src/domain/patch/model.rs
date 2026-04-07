@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fmt;
 
-// ── Value Objects ────────────────────────────────────────────────
+//  Value Objects 
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct ParamValue {
@@ -58,7 +58,7 @@ impl PortId {
     }
 }
 
-// ── Enums ────────────────────────────────────────────────────────
+//  Enums 
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum ModuleKind {
@@ -103,7 +103,7 @@ impl ModuleKind {
     }
 }
 
-// ── Entities ─────────────────────────────────────────────────────
+//  Entities 
 
 #[derive(Clone, Debug)]
 pub struct Module {
@@ -158,7 +158,7 @@ impl Connection {
     }
 }
 
-// ── Aggregate Root : Patch ───────────────────────────────────────
+//  Aggregate Root : Patch 
 
 #[derive(Clone, Debug)]
 pub struct Patch {
@@ -209,7 +209,7 @@ impl Patch {
     }
 }
 
-// ── Builder Pattern (Création) ───────────────────────────────────
+//  Builder Pattern (Cration) 
 
 pub struct PatchBuilder {
     modules: Vec<Module>,
@@ -243,7 +243,7 @@ impl PatchBuilder {
     }
 }
 
-// ── Anti-corruption layer : IPC → Domain ─────────────────────────
+//  Anti-corruption layer : IPC  Domain 
 
 impl Patch {
     pub fn from_ipc(ipc_patch: &crate::ipc::protocol::Patch) -> Result<Self, PatchError> {
@@ -274,7 +274,7 @@ impl Patch {
     }
 }
 
-// ── Errors ───────────────────────────────────────────────────────
+//  Errors 
 
 #[derive(Debug, Clone)]
 pub enum PatchError {

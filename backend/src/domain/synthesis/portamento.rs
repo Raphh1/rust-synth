@@ -1,12 +1,12 @@
-/// Portamento : glisse la fréquence courante vers la fréquence cible.
+/// Portamento : glisse la frquence courante vers la frquence cible.
 ///
 /// Principe : interpolation exponentielle entre freq_current et freq_target
-/// sur une durée `time` secondes. Quand time=0 → pas de glisse (instantané).
+/// sur une dure `time` secondes. Quand time=0  pas de glisse (instantan).
 #[derive(Debug)]
 pub struct Portamento {
-    time: f64,          // durée du glisse en secondes (0 = off)
-    current_freq: f64,  // fréquence courante (Hz)
-    target_freq: f64,   // fréquence cible (Hz)
+    time: f64,          // dure du glisse en secondes (0 = off)
+    current_freq: f64,  // frquence courante (Hz)
+    target_freq: f64,   // frquence cible (Hz)
 }
 
 impl Portamento {
@@ -22,16 +22,16 @@ impl Portamento {
         self.time = time.max(0.0);
     }
 
-    /// Déclenche le glisse vers une nouvelle note.
+    /// Dclenche le glisse vers une nouvelle note.
     pub fn set_target(&mut self, freq: f64) {
         self.target_freq = freq;
-        // Si portamento off → pas de glisse, on saute directement
+        // Si portamento off  pas de glisse, on saute directement
         if self.time < 0.001 {
             self.current_freq = freq;
         }
     }
 
-    /// Avance d'un sample et retourne la fréquence courante.
+    /// Avance d'un sample et retourne la frquence courante.
     pub fn tick(&mut self, sample_rate: f64) -> f64 {
         if self.time < 0.001 || (self.current_freq - self.target_freq).abs() < 0.01 {
             self.current_freq = self.target_freq;
@@ -39,7 +39,7 @@ impl Portamento {
         }
 
         // Coefficient de lissage exponentiel : plus time est grand, plus c'est lent
-        // On vise ~99% atteint après `time` secondes → coeff par sample
+        // On vise ~99% atteint aprs `time` secondes  coeff par sample
         let coeff = (-9.0_f64 / (self.time * sample_rate)).exp();
         self.current_freq = self.target_freq + (self.current_freq - self.target_freq) * coeff;
 

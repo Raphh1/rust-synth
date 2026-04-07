@@ -36,6 +36,10 @@ impl OscillatorNode {
     pub fn set_gain(&mut self, gain: f64) {
         self.gain = gain;
     }
+
+    pub fn set_wavetable(&mut self, wavetable: Wavetable) {
+        self.wavetable = wavetable;
+    }
 }
 
 impl OutputNode {
@@ -79,8 +83,8 @@ impl DspGraphNode {
 }
 
 pub struct DspGraph {
-    nodes: Vec<DspGraphNode>,  // ordonnés topologiquement par PatchCompiler
-    buffers: HashMap<String, f64>,  // buffer de sortie par nœud
+    nodes: Vec<DspGraphNode>,  // ordonns topologiquement par PatchCompiler
+    buffers: HashMap<String, f64>,  // buffer de sortie par nud
 }
 
 impl DspGraph {

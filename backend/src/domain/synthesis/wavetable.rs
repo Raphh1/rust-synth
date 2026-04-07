@@ -36,7 +36,7 @@ impl Wavetable {
         Self::new(samples)
     }
 
-    /// Construit une Wavetable depuis un vecteur de samples envoyé par l'IPC.
+    /// Construit une Wavetable depuis un vecteur de samples envoy par l'IPC.
     pub fn from_samples(samples: Vec<f64>) -> Self {
         Self::new(samples)
     }
