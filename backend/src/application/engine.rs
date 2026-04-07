@@ -58,6 +58,13 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
     let device = host.default_output_device().ok_or("no output device")?;
     let config = device.default_output_config()?;
     let sample_rate = config.sample_rate().0 as f64;
+    let channels    = config.channels() as usize;
+
+    // Stocker le sample rate réel dans l'état pour l'export
+    {
+        let mut s = state.lock().unwrap();
+        s.sample_rate = sample_rate;
+    }
 
     let mut osc        = OscillatorNode::new(Wavetable::sine(Wavetable::DEFAULT_SIZE), 440.0, 0.8);
     let mut envelope   = EnvelopeNode::new(0.01, 0.1, 0.7, 0.3);
@@ -121,13 +128,13 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
                 .map(|n| n.start() + n.length())
                 .fold(4.0_f64, f64::max);
 
-            for out in data.iter_mut() {
+            for frame in data.chunks_mut(channels) {
                 if !snap.is_playing {
-                    *out = 0.0;
+                    for out in frame.iter_mut() { *out = 0.0; }
                     continue;
                 }
 
-                // Squenceur : trouver la note active
+                // Séquenceur : trouver la note active
                 let mut gate = 0.0_f64;
                 for note in &snap.notes {
                     if note.start() <= seq_pos && seq_pos < note.start() + note.length() {
@@ -143,11 +150,11 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
                 let lfo_pitch_mod  = if snap.lfo_target == LfoTarget::Pitch  { lfo_val } else { 0.0 };
                 let lfo_vol_mod    = if snap.lfo_target == LfoTarget::Volume  { lfo_val } else { 0.0 };
 
-                // Frquence + portamento + modulation pitch LFO
+                // Fréquence + portamento + modulation pitch LFO
                 let freq = portamento.tick(sample_rate) * 2_f64.powf(lfo_pitch_mod / 12.0);
                 osc.set_frequency(freq);
 
-                // Oscillateur  envelope  filtre  sortie
+                // Oscillateur → envelope → filtre → sortie
                 let mut osc_out = 0.0;
                 osc.process(&[], &mut osc_out, sample_rate);
 
@@ -161,9 +168,12 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
                 filter.process(&[osc_out * env_out], &mut flt_out, sample_rate);
 
                 let volume = (1.0 + lfo_vol_mod).clamp(0.0, 1.5);
-                *out = (flt_out * volume) as f32;
+                let sample_val = (flt_out * volume) as f32;
 
-                // Avance squenceur
+                // Écrire le même sample sur tous les canaux (mono → stéréo)
+                for out in frame.iter_mut() { *out = sample_val; }
+
+                // Avancer le séquenceur une seule fois par frame
                 seq_pos += beats_per_sample;
                 if seq_pos >= pattern_len {
                     seq_pos = if snap.loop_enabled { seq_pos - pattern_len } else { pattern_len };

@@ -1,3 +1,4 @@
+use crate::application::export::export_wav;
 use crate::domain::sequencing::pattern::Pattern;
 use crate::domain::sequencing::transport::Transport;
 use crate::domain::synthesis::lfo::{LfoShape, LfoTarget};
@@ -30,6 +31,9 @@ pub struct EngineState {
 
     // Portamento
     pub portamento_time: f64,
+
+    // Sample rate du device audio (fixé au démarrage)
+    pub sample_rate: f64,
 }
 
 impl EngineState {
@@ -50,6 +54,7 @@ impl EngineState {
             lfo_shape: LfoShape::Sine,
             lfo_target: LfoTarget::Cutoff,
             portamento_time: 0.0,
+            sample_rate: 44100.0,
         }
     }
 }
@@ -142,6 +147,17 @@ pub fn dispatch(state: &mut EngineState, cmd: Command) -> Response {
         Command::LoopToggle { request_id, enabled } => {
             state.loop_enabled = enabled;
             Response::Ok { request_id }
+        }
+
+        Command::ExportWav { request_id, path } => {
+            match export_wav(state, &path) {
+                Ok(_) => Response::Ok { request_id },
+                Err(e) => Response::Error {
+                    request_id,
+                    code: ErrorCode::ExportFailed,
+                    message: e,
+                },
+            }
         }
 
         Command::PatchReplace { request_id, .. } => {
