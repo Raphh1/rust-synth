@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Mase.Ui.ViewModels;
-public partial class MainViewModel : ViewModelBase
+public partial class MainViewModel : ViewModelBase, IDisposable
 {
     private readonly IpcService _ipcService;
 
@@ -19,6 +19,8 @@ public partial class MainViewModel : ViewModelBase
         _ipcService = new IpcService();
         _ipcService.Connect();
     }
+
+    public void Dispose() => _ipcService.Dispose();
 
     [ObservableProperty]
     private string _windowTitle = "Rusty Synth - Main Rack";
