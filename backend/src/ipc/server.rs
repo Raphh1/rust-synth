@@ -1,7 +1,5 @@
-use std::io::{self, BufRead, Write};
 use crate::ipc::protocol::{Command, ErrorCode, Response};
-
-
+use std::io::{self, BufRead, Write};
 
 struct IpcServer {
     transport_state: TransportState,
@@ -48,8 +46,6 @@ impl IpcServer {
         }
     }
 }
-    
-
 
 pub fn run() -> io::Result<()> {
     let stdin = io::stdin();

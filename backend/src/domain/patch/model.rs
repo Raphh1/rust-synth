@@ -97,12 +97,8 @@ impl ModuleKind {
                 ParamValue::new("sustain", 0.7, 0.0, 1.0),
                 ParamValue::new("release", 0.3, 0.001, 10.0),
             ],
-            ModuleKind::Output => vec![
-                ParamValue::new("gain", 0.8, 0.0, 1.0),
-            ],
-            ModuleKind::Mixer => vec![
-                ParamValue::new("gain", 0.5, 0.0, 1.0),
-            ],
+            ModuleKind::Output => vec![ParamValue::new("gain", 0.8, 0.0, 1.0)],
+            ModuleKind::Mixer => vec![ParamValue::new("gain", 0.5, 0.0, 1.0)],
         }
     }
 }
@@ -189,9 +185,9 @@ impl Patch {
 
     pub fn set_param(&mut self, path: &str, value: f64) -> Result<(), PatchError> {
         let port = PortId::parse(path)?;
-        let module = self.find_module_mut(&port.module_id).ok_or_else(|| {
-            PatchError::ModuleNotFound(port.module_id.clone())
-        })?;
+        let module = self
+            .find_module_mut(&port.module_id)
+            .ok_or_else(|| PatchError::ModuleNotFound(port.module_id.clone()))?;
         module.set_param(&port.port_name, value)
     }
 
@@ -283,8 +279,16 @@ impl Patch {
 #[derive(Debug, Clone)]
 pub enum PatchError {
     ModuleNotFound(String),
-    ParamNotFound { module_id: String, param_name: String },
-    ParamOutOfRange { name: String, min: f64, max: f64, got: f64 },
+    ParamNotFound {
+        module_id: String,
+        param_name: String,
+    },
+    ParamOutOfRange {
+        name: String,
+        min: f64,
+        max: f64,
+        got: f64,
+    },
     InvalidPortId(String),
     UnknownModuleKind(String),
     ValidationFailed(Vec<String>),
@@ -294,11 +298,27 @@ impl fmt::Display for PatchError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             PatchError::ModuleNotFound(id) => write!(f, "Module not found: {}", id),
-            PatchError::ParamNotFound { module_id, param_name } => {
-                write!(f, "Param '{}' not found on module '{}'", param_name, module_id)
+            PatchError::ParamNotFound {
+                module_id,
+                param_name,
+            } => {
+                write!(
+                    f,
+                    "Param '{}' not found on module '{}'",
+                    param_name, module_id
+                )
             }
-            PatchError::ParamOutOfRange { name, min, max, got } => {
-                write!(f, "Param '{}' out of range [{}, {}], got {}", name, min, max, got)
+            PatchError::ParamOutOfRange {
+                name,
+                min,
+                max,
+                got,
+            } => {
+                write!(
+                    f,
+                    "Param '{}' out of range [{}, {}], got {}",
+                    name, min, max, got
+                )
             }
             PatchError::InvalidPortId(s) => write!(f, "Invalid port id: '{}'", s),
             PatchError::UnknownModuleKind(s) => write!(f, "Unknown module kind: '{}'", s),
@@ -348,7 +368,11 @@ mod tests {
             .unwrap();
 
         assert!(patch.set_param("osc1.frequency", 880.0).is_ok());
-        let freq = patch.find_module("osc1").unwrap().get_param("frequency").unwrap();
+        let freq = patch
+            .find_module("osc1")
+            .unwrap()
+            .get_param("frequency")
+            .unwrap();
         assert!((freq.value - 880.0).abs() < f64::EPSILON);
     }
 
@@ -393,7 +417,10 @@ mod tests {
 
     #[test]
     fn test_module_kind_from_str() {
-        assert_eq!(ModuleKind::from_str("oscillator").unwrap(), ModuleKind::Oscillator);
+        assert_eq!(
+            ModuleKind::from_str("oscillator").unwrap(),
+            ModuleKind::Oscillator
+        );
         assert_eq!(ModuleKind::from_str("Filter").unwrap(), ModuleKind::Filter);
         assert!(ModuleKind::from_str("invalid").is_err());
     }

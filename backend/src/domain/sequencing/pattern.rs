@@ -17,6 +17,10 @@ impl Velocity {
             Err(NoteEventError::InvalidVelocity)
         }
     }
+
+    pub fn value(&self) -> f64 {
+        self.0
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -28,6 +32,10 @@ impl Pitch {
         } else {
             Err(NoteEventError::InvalidPitch)
         }
+    }
+
+    pub fn value(&self) -> u8 {
+        self.0
     }
 }
 
@@ -41,6 +49,10 @@ impl Start {
             Err(NoteEventError::InvalidStart)
         }
     }
+
+    pub fn value(&self) -> f64 {
+        self.0
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
@@ -52,6 +64,10 @@ impl Length {
         } else {
             Err(NoteEventError::InvalidLength)
         }
+    }
+
+    pub fn value(&self) -> f64 {
+        self.0
     }
 }
 
@@ -122,19 +138,19 @@ impl NoteEvent {
     }
 
     pub fn pitch(&self) -> u8 {
-        self.pitch.0
+        self.pitch.value()
     }
 
     pub fn start(&self) -> f64 {
-        self.start.0
+        self.start.value()
     }
 
     pub fn length(&self) -> f64 {
-        self.length.0
+        self.length.value()
     }
 
     pub fn velocity(&self) -> f64 {
-        self.velocity.0
+        self.velocity.value()
     }
 }
 
