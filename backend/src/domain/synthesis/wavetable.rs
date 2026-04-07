@@ -59,3 +59,53 @@ impl Wavetable {
     }
 
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sine_starts_at_zero_and_has_correct_size() {
+        let wt = Wavetable::sine(64);
+        assert_eq!(wt.samples().len(), 64);
+        assert!(wt.samples()[0].abs() < 1e-9);
+    }
+
+    #[test]
+    fn sample_at_midpoint_sine_near_zero() {
+        let wt = Wavetable::sine(2048);
+        // phase 0.5 → sin(π) ≈ 0
+        let v = wt.sample_at(0.5);
+        assert!(v.abs() < 1e-3, "expected ~0 at half period, got {}", v);
+    }
+
+    #[test]
+    fn sample_at_quarter_sine_near_one() {
+        let wt = Wavetable::sine(2048);
+        // phase 0.25 → sin(π/2) ≈ 1
+        let v = wt.sample_at(0.25);
+        assert!((v - 1.0).abs() < 1e-2, "expected ~1 at quarter period, got {}", v);
+    }
+
+    #[test]
+    fn from_samples_preserves_values() {
+        let samples = vec![0.0, 0.5, 1.0, 0.5, 0.0, -0.5, -1.0, -0.5];
+        let wt = Wavetable::from_samples(samples.clone());
+        assert_eq!(wt.samples(), samples.as_slice());
+    }
+
+    #[test]
+    fn square_first_half_positive_second_half_negative() {
+        let wt = Wavetable::square(8);
+        assert!(wt.samples()[..4].iter().all(|&v| v == 1.0));
+        assert!(wt.samples()[4..].iter().all(|&v| v == -1.0));
+    }
+
+    #[test]
+    fn saw_runs_from_minus_one_to_near_one() {
+        let wt = Wavetable::saw(100);
+        let s = wt.samples();
+        assert!((s[0] - (-1.0)).abs() < 0.05);
+        assert!((s[99] - 1.0).abs() < 0.05);
+    }
+}

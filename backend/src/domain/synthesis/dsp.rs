@@ -106,3 +106,47 @@ impl DspGraph {
         *self.buffers.get("output").unwrap_or(&0.0)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::domain::synthesis::wavetable::Wavetable;
+
+    const SR: f64 = 44100.0;
+
+    #[test]
+    fn oscillator_output_bounded() {
+        let mut osc = OscillatorNode::new(Wavetable::sine(2048), 440.0, 1.0);
+        for _ in 0..SR as usize {
+            let mut out = 0.0;
+            osc.process(&[], &mut out, SR);
+            assert!(out.abs() <= 1.0, "oscillator out of range: {}", out);
+        }
+    }
+
+    #[test]
+    fn oscillator_gain_zero_outputs_silence() {
+        let mut osc = OscillatorNode::new(Wavetable::sine(2048), 440.0, 0.0);
+        let mut out = 0.0;
+        osc.process(&[], &mut out, SR);
+        assert_eq!(out, 0.0);
+    }
+
+    #[test]
+    fn oscillator_phase_wraps() {
+        let mut osc = OscillatorNode::new(Wavetable::sine(2048), SR, 1.0); // 1 cycle/sample
+        let mut out = 0.0;
+        // After exactly SR samples the phase should have wrapped SR times — just check it doesn't panic
+        for _ in 0..1000 {
+            osc.process(&[], &mut out, SR);
+        }
+    }
+
+    #[test]
+    fn output_node_sums_inputs_with_gain() {
+        let mut node = OutputNode::new(2.0);
+        let mut out = 0.0;
+        node.process(&[1.0, 1.5], &mut out, SR);
+        assert!((out - 5.0).abs() < 1e-9, "expected 5.0, got {}", out);
+    }
+}

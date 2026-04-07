@@ -227,6 +227,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
                 StatusMessage = "Engine: Playing";
                 ToggleWaveformEditCommand.NotifyCanExecuteChanged();
                 ResetWaveformCommand.NotifyCanExecuteChanged();
+                LoadPresetCommand.NotifyCanExecuteChanged();
             }
             else
             {
@@ -264,6 +265,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
                 StatusMessage = "Engine: Stopped";
                 ToggleWaveformEditCommand.NotifyCanExecuteChanged();
                 ResetWaveformCommand.NotifyCanExecuteChanged();
+                LoadPresetCommand.NotifyCanExecuteChanged();
             }
             else
             {

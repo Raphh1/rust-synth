@@ -58,6 +58,7 @@ pub enum Command {
     },
     WavetableSet {
         request_id: String,
+        #[serde(default)]
         osc_id: String,
         table: Vec<f64>,
     },

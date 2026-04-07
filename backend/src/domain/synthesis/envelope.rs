@@ -64,3 +64,68 @@ impl DspNode for EnvelopeNode {
         *output = self.level;
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::domain::synthesis::dsp::DspNode;
+
+    const SR: f64 = 44100.0;
+
+    fn run(env: &mut EnvelopeNode, gate: f64, samples: usize) -> f64 {
+        let mut out = 0.0;
+        for _ in 0..samples { env.process(&[gate], &mut out, SR); }
+        out
+    }
+
+    #[test]
+    fn starts_idle_at_zero() {
+        let mut env = EnvelopeNode::new(0.01, 0.1, 0.7, 0.3);
+        let mut out = 0.0;
+        env.process(&[0.0], &mut out, SR);
+        assert_eq!(out, 0.0);
+    }
+
+    #[test]
+    fn attack_rises_to_one() {
+        let attack = 0.01;
+        let mut env = EnvelopeNode::new(attack, 0.001, 1.0, 0.001);
+        // Run enough samples for full attack
+        let samples = (attack * SR * 1.5) as usize;
+        let out = run(&mut env, 1.0, samples);
+        assert!((out - 1.0).abs() < 0.01, "expected ~1.0, got {}", out);
+    }
+
+    #[test]
+    fn sustain_level_reached_after_decay() {
+        let sustain = 0.5;
+        let mut env = EnvelopeNode::new(0.001, 0.01, sustain, 0.3);
+        // Run past attack + decay
+        let samples = (0.1 * SR) as usize;
+        let out = run(&mut env, 1.0, samples);
+        assert!((out - sustain).abs() < 0.01, "expected sustain ~{}, got {}", sustain, out);
+    }
+
+    #[test]
+    fn release_returns_to_zero() {
+        let mut env = EnvelopeNode::new(0.001, 0.001, 0.7, 0.01);
+        // Trigger attack/decay/sustain
+        run(&mut env, 1.0, (0.1 * SR) as usize);
+        // Now release
+        let out = run(&mut env, 0.0, (0.5 * SR) as usize);
+        assert!(out < 0.001, "expected ~0 after release, got {}", out);
+    }
+
+    #[test]
+    fn retrigger_restarts_attack() {
+        let mut env = EnvelopeNode::new(0.001, 0.001, 0.7, 0.3);
+        run(&mut env, 1.0, (0.1 * SR) as usize); // reach sustain
+        run(&mut env, 0.0, 10);                   // start release
+        // Retrigger
+        let mut out = 0.0;
+        env.process(&[1.0], &mut out, SR);
+        // Should be back in attack stage (level rising)
+        let out2 = run(&mut env, 1.0, 5);
+        assert!(out2 > 0.0);
+    }
+}

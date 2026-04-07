@@ -258,6 +258,100 @@ pub enum PatternError {
     InvalidStart,
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn note(pitch: u8, start: f64, length: f64, velocity: f64) -> Result<NoteId, PatternError> {
+        Pattern::new().add_note("n".into(), pitch, start, length, velocity)
+    }
+
+    #[test]
+    fn add_note_valid() {
+        let mut p = Pattern::new();
+        let id = p.add_note("n1".into(), 60, 0.0, 1.0, 0.8).unwrap();
+        assert_eq!(p.notes().len(), 1);
+        assert_eq!(p.notes()[0].id(), "n1");
+    }
+
+    #[test]
+    fn add_note_invalid_velocity_above_one() {
+        assert!(matches!(
+            Pattern::new().add_note("n".into(), 60, 0.0, 1.0, 1.1),
+            Err(PatternError::InvalidVelocity)
+        ));
+    }
+
+    #[test]
+    fn add_note_invalid_velocity_negative() {
+        assert!(matches!(
+            Pattern::new().add_note("n".into(), 60, 0.0, 1.0, -0.1),
+            Err(PatternError::InvalidVelocity)
+        ));
+    }
+
+    #[test]
+    fn add_note_invalid_length_zero() {
+        assert!(matches!(
+            Pattern::new().add_note("n".into(), 60, 0.0, 0.0, 0.8),
+            Err(PatternError::InvalidLength)
+        ));
+    }
+
+    #[test]
+    fn add_note_invalid_length_negative() {
+        assert!(matches!(
+            Pattern::new().add_note("n".into(), 60, 0.0, -1.0, 0.8),
+            Err(PatternError::InvalidLength)
+        ));
+    }
+
+    #[test]
+    fn add_note_invalid_start_negative() {
+        assert!(matches!(
+            Pattern::new().add_note("n".into(), 60, -0.1, 1.0, 0.8),
+            Err(PatternError::InvalidStart)
+        ));
+    }
+
+    #[test]
+    fn move_note_not_found() {
+        let mut p = Pattern::new();
+        assert!(matches!(
+            p.move_note_by_str("ghost", 60, 0.0),
+            Err(PatternError::NoteNotFound)
+        ));
+    }
+
+    #[test]
+    fn resize_note_not_found() {
+        let mut p = Pattern::new();
+        assert!(matches!(
+            p.resize_note_by_str("ghost", 1.0),
+            Err(PatternError::NoteNotFound)
+        ));
+    }
+
+    #[test]
+    fn delete_note_not_found() {
+        let mut p = Pattern::new();
+        assert!(matches!(
+            p.delete_note_by_str("ghost"),
+            Err(PatternError::NoteNotFound)
+        ));
+    }
+
+    #[test]
+    fn active_notes_at_boundary() {
+        let mut p = Pattern::new();
+        p.add_note("n".into(), 60, 1.0, 2.0, 0.8).unwrap(); // active [1.0, 3.0)
+        assert_eq!(p.active_notes_at(0.9).len(), 0);
+        assert_eq!(p.active_notes_at(1.0).len(), 1);
+        assert_eq!(p.active_notes_at(2.9).len(), 1);
+        assert_eq!(p.active_notes_at(3.0).len(), 0);
+    }
+}
+
 impl std::fmt::Display for PatternError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
