@@ -68,19 +68,21 @@ rust-synth/
 │           ├── dispatcher.rs  # Command Pattern
 │           ├── protocol.rs    # Types serde (Command, Response)
 │           └── server.rs
-└── UI-rusty-synth/
-    └── Mase.Ui/               # Projet Avalonia C#
-        ├── Services/
-        │   └── IpcService.cs  # Spawn + communication avec le backend
-        ├── ViewModels/
-        │   └── MainViewModel.cs
-        ├── Views/
-        ├── Controls/
-        │   ├── PianoRollGrid.cs
-        │   ├── WaveformControl.cs
-        │   └── EnvelopeControl.cs
-        └── Models/
-            └── NoteModel.cs
+├── frontend/                  # Projet Avalonia C#
+│   ├── Mase.Ui.csproj
+│   ├── Services/
+│   │   └── IpcService.cs      # Spawn + communication avec le backend
+│   ├── ViewModels/
+│   │   └── MainViewModel.cs
+│   ├── Views/
+│   ├── Controls/
+│   │   ├── PianoRollGrid.cs
+│   │   ├── WaveformControl.cs
+│   │   └── EnvelopeControl.cs
+│   └── Models/
+│       └── NoteModel.cs
+├── docs/
+└── rust-synth.sln
 ```
 
 ---
@@ -107,7 +109,7 @@ cargo test
 ### Application complète
 
 ```bash
-cd UI-rusty-synth/Mase.Ui
+cd frontend
 dotnet run
 ```
 
@@ -125,7 +127,7 @@ Chaque commande contient un `request_id` ; chaque réponse retourne le même `re
 
 **Réponses :** `{"type":"ok","request_id":"..."}` ou `{"type":"error","request_id":"...","code":"...","message":"..."}`
 
-Voir `docs/ipc-protocol.md` pour le contrat complet.
+Voir [ipc_protocol.md](../ipc_protocol.md) pour le contrat complet.
 
 ---
 
@@ -136,7 +138,7 @@ cd backend
 cargo test
 ```
 
-52 tests couvrant : dispatcher IPC, Pattern aggregate, Wavetable, Envelope, Oscillateur, Filtre, LFO, Portamento.
+65 tests couvrant : dispatcher IPC, Pattern aggregate, Transport, Validator, Wavetable, Envelope, Oscillateur, Filtre, LFO, Portamento.
 
 ---
 

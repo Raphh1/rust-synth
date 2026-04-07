@@ -8,7 +8,7 @@ Backend **Rust** (domaine + audio temps réel) + Frontend **C# Avalonia** (IHM).
 ## Démarrage rapide
 
 ```bash
-cd UI-rusty-synth/Mase.Ui
+cd frontend
 dotnet run
 ```
 
