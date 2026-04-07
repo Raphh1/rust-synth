@@ -29,18 +29,24 @@ pub fn run() -> io::Result<()> {
 
     for line in stdin.lock().lines() {
         let line = line?;
+        eprintln!("[backend input] {}", line);
         let response = match serde_json::from_str::<Command>(&line) {
             Ok(cmd) => {
                 let mut s = state.lock().unwrap();
                 dispatch(&mut s, cmd)
             }
-            Err(_) => Response::Error {
-                request_id: "unknown".into(),
-                code: ErrorCode::InvalidMessage,
-                message: "Invalid JSON".into(),
-            },
+            Err(e) => {
+                eprintln!("[backend deserialization error] {}", e);
+                Response::Error {
+                    request_id: "unknown".into(),
+                    code: ErrorCode::InvalidMessage,
+                    message: format!("Invalid JSON: {}", e),
+                }
+            }
         };
-        writeln!(stdout, "{}", serde_json::to_string(&response).unwrap())?;
+        let response_str = serde_json::to_string(&response).unwrap();
+        eprintln!("[backend output] {}", response_str);
+        writeln!(stdout, "{}", &response_str)?;
         stdout.flush()?;
     }
 

@@ -64,13 +64,13 @@ public class IpcService : IDisposable
 
         var msg = new JsonObject
         {
-            ["type"]      = commandType,
-            ["requestId"] = requestId
+              ["type"]       = commandType,
+              ["request_id"] = requestId
         };
-
         if (payload != null)
         {
-            var payloadNode = JsonSerializer.SerializeToNode(payload);
+            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            var payloadNode = JsonSerializer.SerializeToNode(payload, options);
             if (payloadNode is JsonObject payloadObj)
                 foreach (var kv in payloadObj)
                     msg[kv.Key] = kv.Value?.DeepClone();
@@ -124,7 +124,7 @@ public class IpcService : IDisposable
                 var doc = JsonDocument.Parse(line);
                 var root = doc.RootElement;
 
-                if (!root.TryGetProperty("requestId", out var idProp)) continue;
+                if (!root.TryGetProperty("request_id", out var idProp)) continue;
                 var requestId = idProp.GetString() ?? "";
 
                 if (!_pending.TryGetValue(requestId, out var tcs)) continue;
