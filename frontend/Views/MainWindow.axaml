@@ -1,0 +1,235 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Mase.Ui.ViewModels"
+        xmlns:controls="using:Mase.Ui.Controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Mase.Ui.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Mase.Ui"
+        Background="#FF424242">
+
+    <Design.DataContext>
+        <vm:MainViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto, *, Auto">
+
+        <!-- TOP: Transport Section -->
+        <Border Grid.Row="0" Background="#2D2D30" Padding="10" BorderBrush="#3E3E42" BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="Auto,Auto,Auto,*,Auto" VerticalAlignment="Center">
+                <StackPanel Orientation="Horizontal" Spacing="10" Grid.Column="0">
+                    <TextBlock Text="TRANSPORT" Foreground="#AAAAAA" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+                    <Button Content="{Binding PlayButtonText}"
+                            Command="{Binding PlayCommand}"
+                            Background="{Binding PlayButtonColor}"
+                            Foreground="White"/>
+                    <Button Content="Stop ⏹" Command="{Binding StopCommand}" Background="#3E3E42" Foreground="#FF6B6B"/>
+                    <Button Content="{Binding LoopButtonText}"
+                            Command="{Binding ToggleLoopCommand}"
+                            Background="{Binding LoopButtonColor}"
+                            Foreground="White"/>
+                    <Button Content="Record ⏺" Background="#3E3E42" Foreground="#FF6B6B"/>
+                    <Button Content="Export WAV" Command="{Binding ExportWavCommand}" Background="#3E3E42" Foreground="#4FC3F7"/>
+                    <Separator Background="#555" Width="1" Margin="5,0"/>
+                    <TextBlock Text="BPM" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                    <Button Content="-" Command="{Binding BpmDownCommand}" Background="#3E3E42" Foreground="White" Width="24" Padding="0"/>
+                    <TextBox Text="{Binding BpmText, Mode=TwoWay}"
+                             Width="52" TextAlignment="Center" VerticalAlignment="Center"
+                             Foreground="White" CaretBrush="White"
+                             BorderBrush="#555" BorderThickness="1" Padding="2,0">
+                        <TextBox.Styles>
+                            <Style Selector="TextBox /template/ Border#PART_BorderElement">
+                                <Setter Property="Background" Value="#1E1E1E"/>
+                            </Style>
+                            <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+                                <Setter Property="Background" Value="#1E1E1E"/>
+                                <Setter Property="BorderBrush" Value="#007ACC"/>
+                            </Style>
+                            <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+                                <Setter Property="Background" Value="#1E1E1E"/>
+                            </Style>
+                        </TextBox.Styles>
+                    </TextBox>
+                    <Button Content="+" Command="{Binding BpmUpCommand}"   Background="#3E3E42" Foreground="White" Width="24" Padding="0"/>
+                    <Slider Minimum="40" Maximum="250" Value="{Binding Bpm, Mode=TwoWay}" Width="100" VerticalAlignment="Center"/>
+                    <Separator Background="#555" Width="1" Margin="5,0"/>
+                    <Button Content="Open Piano Roll Window" Command="{Binding OpenPianoRollCommand}" Background="#007ACC" Foreground="White"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <TextBlock Text="Engine:" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                    <Border Background="{Binding EngineStateColor}" CornerRadius="10" Padding="10,4">
+                        <TextBlock Text="{Binding EngineStateText}" Foreground="White" FontWeight="SemiBold"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- CENTER: Main Workspace -->
+        <Grid Grid.Row="1" RowDefinitions="*, 4, *">
+
+            <!-- TOP HALF: Parameters and Waveform -->
+            <Grid Grid.Row="0" ColumnDefinitions="300, 4, *">
+
+                <!-- LEFT: Parameters Section -->
+                <Border Grid.Column="0" Background="#252526" BorderBrush="#3E3E42" BorderThickness="1" CornerRadius="4" Margin="5">
+                    <Grid RowDefinitions="Auto, *">
+                        <Border Background="#333337" CornerRadius="3,3,0,0" Padding="10,5">
+                            <TextBlock Text="PARAMETERS" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12"/>
+                        </Border>
+
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="12" Spacing="12">
+
+                                <!-- Portamento -->
+                                <TextBlock Text="Portamento" Foreground="#DDDDDD"/>
+                                <Slider Minimum="0.0" Maximum="2.0"
+                                        Value="{Binding Portamento, Mode=TwoWay}"/>
+                                <TextBlock Text="{Binding PortamentoDisplay}" Foreground="#AAAAAA"/>
+
+                                <Separator Background="#3E3E42" Height="1" Margin="0,4"/>
+
+                                <!-- Cutoff -->
+                                <TextBlock Text="Cutoff" Foreground="#DDDDDD"/>
+                                <Slider Minimum="20" Maximum="20000"
+                                        Value="{Binding Cutoff, Mode=TwoWay}"/>
+                                <TextBlock Text="{Binding CutoffDisplay}" Foreground="#AAAAAA"/>
+
+                                <!-- Resonance -->
+                                <TextBlock Text="Resonance" Foreground="#DDDDDD" Margin="0,4,0,0"/>
+                                <Slider Minimum="0.0" Maximum="1.0"
+                                        Value="{Binding Resonance, Mode=TwoWay}"/>
+                                <TextBlock Text="{Binding ResonanceDisplay}" Foreground="#AAAAAA"/>
+
+                                <Separator Background="#3E3E42" Height="1" Margin="0,4"/>
+
+                                <!-- Envelope -->
+                                <TextBlock Text="ENVELOPE" Foreground="#CCCCCC" FontWeight="Bold" FontSize="11"/>
+                                <controls:EnvelopeControl x:Name="EnvelopeCtrl" Height="100"/>
+
+                                <Grid ColumnDefinitions="30,*,36" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" Margin="0,4,0,0">
+                                    <!-- Attack -->
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="A" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="0" Grid.Column="1" Minimum="0.001" Maximum="2.0"
+                                              Value="{Binding Attack, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding Attack, StringFormat='{}{0:F2}s'}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                    <!-- Decay -->
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="D" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="2" Grid.Column="1" Minimum="0.001" Maximum="2.0"
+                                              Value="{Binding Decay, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Decay, StringFormat='{}{0:F2}s'}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                    <!-- Sustain -->
+                                    <TextBlock Grid.Row="4" Grid.Column="0" Text="S" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="4" Grid.Column="1" Minimum="0.0" Maximum="1.0"
+                                              Value="{Binding Sustain, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding Sustain, StringFormat='{}{0:F2}'}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                    <!-- Release -->
+                                    <TextBlock Grid.Row="6" Grid.Column="0" Text="R" Foreground="#AAAAAA" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="6" Grid.Column="1" Minimum="0.001" Maximum="5.0"
+                                              Value="{Binding Release, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding Release, StringFormat='{}{0:F2}s'}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                </Grid>
+
+                                <Separator Background="#3E3E42" Height="1" Margin="0,4"/>
+
+                                <!-- LFO -->
+                                <TextBlock Text="LFO" Foreground="#CCCCCC" FontWeight="Bold" FontSize="11"/>
+
+                                <TextBlock Text="Shape" Foreground="#AAAAAA" FontSize="10"/>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <Button Content="~ Sine"  Command="{Binding SetLfoShapeCommand}" CommandParameter="sine"
+                                            Background="{Binding LfoSineColor}"   Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="⊓ Sqr"   Command="{Binding SetLfoShapeCommand}" CommandParameter="square"
+                                            Background="{Binding LfoSquareColor}" Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="△ Tri"   Command="{Binding SetLfoShapeCommand}" CommandParameter="triangle"
+                                            Background="{Binding LfoTriColor}"    Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="/ Saw"   Command="{Binding SetLfoShapeCommand}" CommandParameter="saw"
+                                            Background="{Binding LfoSawColor}"    Foreground="White" Padding="6,2" FontSize="10"/>
+                                </StackPanel>
+
+                                <TextBlock Text="Target" Foreground="#AAAAAA" FontSize="10"/>
+                                <StackPanel Orientation="Horizontal" Spacing="4">
+                                    <Button Content="Cutoff" Command="{Binding SetLfoTargetCommand}" CommandParameter="cutoff"
+                                            Background="{Binding LfoCutoffColor}"  Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="Pitch"  Command="{Binding SetLfoTargetCommand}" CommandParameter="pitch"
+                                            Background="{Binding LfoPitchColor}"   Foreground="White" Padding="6,2" FontSize="10"/>
+                                    <Button Content="Volume" Command="{Binding SetLfoTargetCommand}" CommandParameter="volume"
+                                            Background="{Binding LfoVolumeColor}"  Foreground="White" Padding="6,2" FontSize="10"/>
+                                </StackPanel>
+
+                                <Grid ColumnDefinitions="46,*,40" RowDefinitions="Auto,Auto,Auto,Auto" Margin="0,4,0,0">
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="Rate"  Foreground="#AAAAAA" FontSize="10" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="0" Grid.Column="1" Minimum="0.1" Maximum="20.0"
+                                              Value="{Binding LfoRate, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding LfoRateDisplay}"  Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+
+                                    <TextBlock Grid.Row="2" Grid.Column="0" Text="Depth" Foreground="#AAAAAA" FontSize="10" VerticalAlignment="Center"/>
+                                    <Slider   Grid.Row="2" Grid.Column="1" Minimum="0.0" Maximum="1.0"
+                                              Value="{Binding LfoDepth, Mode=TwoWay}"/>
+                                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding LfoDepthDisplay}" Foreground="#888888" FontSize="10" VerticalAlignment="Center"/>
+                                </Grid>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <GridSplitter Grid.Column="1" Background="#1E1E1E" ResizeDirection="Columns"/>
+
+                <!-- RIGHT: Waveform Section -->
+                <Border Grid.Column="2" Background="#1E1E1E" BorderBrush="#3E3E42" BorderThickness="1" CornerRadius="4" Margin="5">
+                    <Grid RowDefinitions="Auto, Auto, *">
+                        <Border Background="#333337" CornerRadius="3,3,0,0" Padding="6,4">
+                            <Grid ColumnDefinitions="*, Auto, Auto">
+                                <TextBlock Text="WAVEFORM" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1"
+                                        Content="{Binding WaveformModeText}"
+                                        Command="{Binding ToggleWaveformEditCommand}"
+                                        Background="{Binding WaveformModeColor}"
+                                        Foreground="White" Padding="8,2" Margin="0,0,4,0" FontSize="11"/>
+                                <Button Grid.Column="2"
+                                        Content="Reset"
+                                        Command="{Binding ResetWaveformCommand}"
+                                        Background="#3E3E42" Foreground="#AAAAAA" Padding="8,2" FontSize="11"/>
+                            </Grid>
+                        </Border>
+                        <!-- Presets -->
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="4" Margin="6,4">
+                            <Button Content="Sine ~"    Command="{Binding LoadPresetCommand}" CommandParameter="sine"
+                                    Background="#2D2D30" Foreground="#CCCCCC" Padding="8,2" FontSize="11"/>
+                            <Button Content="Square ⊓"  Command="{Binding LoadPresetCommand}" CommandParameter="square"
+                                    Background="#2D2D30" Foreground="#CCCCCC" Padding="8,2" FontSize="11"/>
+                            <Button Content="Saw /"     Command="{Binding LoadPresetCommand}" CommandParameter="saw"
+                                    Background="#2D2D30" Foreground="#CCCCCC" Padding="8,2" FontSize="11"/>
+                            <Button Content="Tri △"     Command="{Binding LoadPresetCommand}" CommandParameter="triangle"
+                                    Background="#2D2D30" Foreground="#CCCCCC" Padding="8,2" FontSize="11"/>
+                        </StackPanel>
+                        <controls:WaveformControl Grid.Row="2" x:Name="WaveformCtrl"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <GridSplitter Grid.Row="1" Background="#1E1E1E" ResizeDirection="Rows"/>
+
+            <!-- BOTTOM HALF: Piano Roll Section -->
+            <Border Grid.Row="2" Background="#202020" BorderBrush="#3E3E42" BorderThickness="1" CornerRadius="4" Margin="5">
+                <Grid RowDefinitions="Auto, *">
+                    <Border Background="#333337" CornerRadius="3,3,0,0" Padding="10,5">
+                        <TextBlock Text="PIANO ROLL" Foreground="#CCCCCC" FontWeight="Bold" FontSize="12"/>
+                    </Border>
+                    <controls:PianoRollGrid Grid.Row="1" x:Name="MainPianoRoll"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- BOTTOM: Status Bar -->
+        <Border Grid.Row="2" Background="#007ACC" Padding="5,2">
+            <TextBlock Text="{Binding StatusMessage}" Foreground="White" FontSize="12"/>
+        </Border>
+
+    </Grid>
+
+</Window>
