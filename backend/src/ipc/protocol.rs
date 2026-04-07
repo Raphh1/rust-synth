@@ -24,9 +24,10 @@ pub enum Command {
     Stop {
         request_id: String,
     },
+    /// name = "filter.cutoff", "envelope.attack", "lfo.rate", etc.
     SetParam {
         request_id: String,
-        path: String,
+        name: String,
         value: f64,
     },
     AddNote {
@@ -41,8 +42,8 @@ pub enum Command {
     },
     ResizeNote {
         request_id: String,
-        length: f64,
         id: String,
+        length: f64,
     },
     DeleteNote {
         request_id: String,
@@ -59,6 +60,10 @@ pub enum Command {
         request_id: String,
         osc_id: String,
         table: Vec<f64>,
+    },
+    LoopToggle {
+        request_id: String,
+        enabled: bool,
     },
 }
 
@@ -77,10 +82,10 @@ pub enum ErrorCode {
 
 #[derive(Deserialize)]
 pub struct Note {
-    pub start: f64,
     pub pitch: u8,
-    pub velocity: f64,
+    pub start: f64,
     pub length: f64,
+    pub velocity: f64,
 }
 
 #[derive(Deserialize)]
@@ -90,7 +95,6 @@ pub struct Patch {
 }
 
 #[derive(Deserialize)]
-
 pub struct Module {
     pub id: String,
     pub kind: String,

@@ -220,6 +220,22 @@ impl Pattern {
     pub fn notes(&self) -> &[NoteEvent] {
         &self.notes
     }
+
+    /// Helpers pour le dispatcher IPC qui travaille avec des String ids.
+    pub fn move_note_by_str(&mut self, id: &str, pitch: u8, start: f64) -> Result<(), PatternError> {
+        let note_id = NoteId(id.to_string());
+        self.move_note(&note_id, pitch, start)
+    }
+
+    pub fn resize_note_by_str(&mut self, id: &str, length: f64) -> Result<(), PatternError> {
+        let note_id = NoteId(id.to_string());
+        self.resize_note(&note_id, length)
+    }
+
+    pub fn delete_note_by_str(&mut self, id: &str) -> Result<(), PatternError> {
+        let note_id = NoteId(id.to_string());
+        self.delete_note(&note_id)
+    }
 }
 
 impl From<NoteEventError> for PatternError {
