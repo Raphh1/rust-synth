@@ -14,11 +14,13 @@ using System.Threading.Tasks;
 namespace Mase.Ui.ViewModels;
 public partial class MainViewModel : ViewModelBase, IDisposable
 {
-    private readonly IpcService _ipcService;
+    private readonly IIpcService _ipcService;
 
-    public MainViewModel()
+    public MainViewModel() : this(new IpcService()) { }
+
+    public MainViewModel(IIpcService ipcService)
     {
-        _ipcService = new IpcService();
+        _ipcService = ipcService;
         _ipcService.Connect();
     }
 
@@ -166,7 +168,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     partial void OnResonanceChanged(double value)
     {
-        ResonanceDisplay = $"Resonance: {value:F2}";
+        ResonanceDisplay = $"Resonance: {value.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}";
         _ = SendSetParamAsync("filter.resonance", value);
     }
 
@@ -397,7 +399,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
 
     partial void OnPortamentoChanged(double value)
     {
-        PortamentoDisplay = value < 0.001 ? "Off" : $"{value:F2}s";
+        PortamentoDisplay = value < 0.001 ? "Off" : $"{value.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)}s";
         _ = SendSetParamAsync("portamento.time", value);
     }
 
