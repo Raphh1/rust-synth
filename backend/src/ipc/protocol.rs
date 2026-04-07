@@ -82,6 +82,7 @@ pub enum ErrorCode {
 
 #[derive(Deserialize)]
 pub struct Note {
+    pub id: String,
     pub pitch: u8,
     pub start: f64,
     pub length: f64,

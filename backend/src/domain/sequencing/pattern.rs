@@ -170,16 +170,16 @@ impl Pattern {
 
     pub fn add_note(
         &mut self,
+        id: String,
         pitch: u8,
         start: f64,
         length: f64,
         velocity: f64,
     ) -> Result<NoteId, PatternError> {
-        let id = NoteId(self.next_note_id.to_string());
-        self.next_note_id += 1;
+        let note_id = NoteId(id);
         self.notes
-            .push(NoteEvent::new(id.clone(), pitch, start, length, velocity)?);
-        Ok(id)
+            .push(NoteEvent::new(note_id.clone(), pitch, start, length, velocity)?);
+        Ok(note_id)
     }
 
     pub fn move_note(&mut self, id: &NoteId, pitch: u8, start: f64) -> Result<(), PatternError> {

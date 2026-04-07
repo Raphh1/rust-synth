@@ -91,7 +91,7 @@ pub fn dispatch(state: &mut EngineState, cmd: Command) -> Response {
         }
 
         Command::AddNote { request_id, note } => {
-            match state.pattern.add_note(note.pitch, note.start, note.length, note.velocity) {
+            match state.pattern.add_note(note.id, note.pitch, note.start, note.length, note.velocity) {
                 Ok(_) => Response::Ok { request_id },
                 Err(e) => Response::Error {
                     request_id,
@@ -221,7 +221,7 @@ mod tests {
         let mut s = state();
         dispatch(&mut s, Command::AddNote {
             request_id: "1".into(),
-            note: crate::ipc::protocol::Note { pitch: 60, start: 0.0, length: 1.0, velocity: 0.8 },
+            note: crate::ipc::protocol::Note { id: "note-1".into(), pitch: 60, start: 0.0, length: 1.0, velocity: 0.8 },
         });
         assert_eq!(s.pattern.notes().len(), 1);
 

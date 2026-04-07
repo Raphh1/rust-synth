@@ -13,11 +13,10 @@ use crate::domain::synthesis::wavetable::Wavetable;
 use crate::ipc::dispatcher::{dispatch, EngineState};
 use crate::ipc::protocol::{Command, ErrorCode, Response};
 
-/// Point d'entre principal : lance le thread audio puis la boucle IPC.
+
 pub fn run() -> io::Result<()> {
     let state = Arc::new(Mutex::new(EngineState::new()));
 
-    // // Thread audio
     let audio_state = Arc::clone(&state);
     thread::spawn(move || {
         if let Err(e) = run_audio(audio_state) {
@@ -25,7 +24,6 @@ pub fn run() -> io::Result<()> {
         }
     });
 
-    // // Boucle IPC (stdin/stdout)
     let stdin = io::stdin();
     let mut stdout = io::stdout();
 
@@ -55,13 +53,13 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
     let config = device.default_output_config()?;
     let sample_rate = config.sample_rate().0 as f64;
 
-    // DSP local au thread audio  pas besoin de Mutex
     let mut osc        = OscillatorNode::new(Wavetable::sine(Wavetable::DEFAULT_SIZE), 440.0, 0.8);
     let mut envelope   = EnvelopeNode::new(0.01, 0.1, 0.7, 0.3);
     let mut filter     = FilterNode::new(1000.0, 0.5, sample_rate);
     let mut lfo        = Lfo::new(1.0, 0.5, LfoShape::Sine, LfoTarget::Cutoff);
     let mut portamento = Portamento::new(0.0, 440.0);
-    let mut seq_pos    = 0.0_f64; // position en beats
+    let mut seq_pos      = 0.0_f64;
+    let mut was_playing  = false; // pour détecter le front montant Play
 
     let midi_to_hz = |pitch: u8| -> f64 {
         440.0 * 2_f64.powf((pitch as f64 - 69.0) / 12.0)
@@ -70,7 +68,6 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
     let stream = device.build_output_stream(
         &config.into(),
         move |data: &mut [f32], _| {
-            // Snapshot rapide de l'tat partag
             let snap = {
                 let s = state.lock().unwrap();
                 Snapshot {
@@ -106,6 +103,12 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
             lfo.set_target(snap.lfo_target.clone());
             portamento.set_time(snap.port_time);
             osc.set_wavetable(snap.wavetable);
+
+            // Reset seq_pos au début de chaque Play
+            if snap.is_playing && !was_playing {
+                seq_pos = 0.0;
+            }
+            was_playing = snap.is_playing;
 
             let beats_per_sample = snap.bpm / 60.0 / sample_rate;
             let pattern_len = snap.notes.iter()

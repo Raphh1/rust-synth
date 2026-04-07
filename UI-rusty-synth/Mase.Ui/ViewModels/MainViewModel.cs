@@ -132,7 +132,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
         try
         {
             WaveformTable = table;
-            await _ipcService.SendCommandAsync("WavetableSet", Guid.NewGuid().ToString(),
+            await _ipcService.SendCommandAsync("wavetableSet", Guid.NewGuid().ToString(),
                 new { oscId = "osc1", table });
         }
         catch (Exception ex) { StatusMessage = $"Error: {ex.Message}"; }
@@ -173,7 +173,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     {
         _isLooping = !_isLooping;
 
-        bool success = await _ipcService.SendCommandAsync("LoopToggle", Guid.NewGuid().ToString(),
+        bool success = await _ipcService.SendCommandAsync("loopToggle", Guid.NewGuid().ToString(),
             new { enabled = _isLooping });
 
         if (success)
@@ -213,7 +213,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             string requestId = Guid.NewGuid().ToString();
             
             // Communication avec le backend Rust via le service IPC
-            bool success = await _ipcService.SendCommandAsync("Play", requestId);
+            bool success = await _ipcService.SendCommandAsync("play", requestId);
 
             if (success)
             {
@@ -250,7 +250,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             string requestId = Guid.NewGuid().ToString();
             
             // Communication avec le backend Rust via le service IPC
-            bool success = await _ipcService.SendCommandAsync("Stop", requestId);
+            bool success = await _ipcService.SendCommandAsync("stop", requestId);
 
             if (success)
             {
@@ -281,7 +281,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             var note = new NoteModel { Pitch = pitch, Start = beat };
             string requestId = Guid.NewGuid().ToString();
 
-            bool success = await _ipcService.SendCommandAsync("AddNote", requestId, new { note = new { pitch, start = beat, length = note.Length, velocity = note.Velocity } });
+            bool success = await _ipcService.SendCommandAsync("addNote", requestId, new { note = new { id = note.Id, pitch, start = beat, length = note.Length, velocity = note.Velocity } });
 
             if (success)
             {
@@ -306,7 +306,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             var note = Notes.Find(n => n.Id == noteId);
             if (note == null) return;
 
-            bool success = await _ipcService.SendCommandAsync("DeleteNote", Guid.NewGuid().ToString(),
+            bool success = await _ipcService.SendCommandAsync("deleteNote", Guid.NewGuid().ToString(),
                 new { id = noteId });
 
             if (success)
@@ -322,7 +322,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     {
         try
         {
-            bool success = await _ipcService.SendCommandAsync("MoveNote", Guid.NewGuid().ToString(),
+            bool success = await _ipcService.SendCommandAsync("moveNote", Guid.NewGuid().ToString(),
                 new { id = noteId, pitch = newPitch, start = newBeat });
 
             if (success)
@@ -335,7 +335,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
     {
         try
         {
-            bool success = await _ipcService.SendCommandAsync("ResizeNote", Guid.NewGuid().ToString(),
+            bool success = await _ipcService.SendCommandAsync("resizeNote", Guid.NewGuid().ToString(),
                 new { id = noteId, length = newLength });
 
             if (success)
@@ -424,7 +424,7 @@ public partial class MainViewModel : ViewModelBase, IDisposable
             string requestId = Guid.NewGuid().ToString();
             
             // Communication avec le backend Rust via le service IPC
-            bool success = await _ipcService.SendCommandAsync("SetParam", requestId, new { name = paramName, value });
+            bool success = await _ipcService.SendCommandAsync("setParam", requestId, new { name = paramName, value });
 
             if (success)
             {

@@ -147,14 +147,18 @@ public class IpcService : IDisposable
     /// Cherche l'exécutable backend selon l'OS et les chemins connus.
     private static string? FindBackendExecutable()
     {
+        // Remonte depuis bin/Debug/net8.0/ jusqu'a la racine du repo
+        var baseDir = AppContext.BaseDirectory;
+        var repoRoot = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+
         var candidates = new[]
         {
-            // Release Windows (quand compilé pour Windows natif)
-            Path.Combine(AppContext.BaseDirectory, "backend.exe"),
-            // Debug WSL path via chemin absolu
-            @"\\wsl.localhost\Ubuntu\home\raphaelcau\rust-synth\backend\target\debug\backend",
-            // Release WSL
-            @"\\wsl.localhost\Ubuntu\home\raphaelcau\rust-synth\backend\target\release\backend",
+            // A cote de l'UI (si on copie le .exe manuellement)
+            Path.Combine(baseDir, "backend.exe"),
+            // cargo build --release depuis Windows
+            Path.Combine(repoRoot, "backend", "target", "release", "backend.exe"),
+            // cargo build (debug) depuis Windows
+            Path.Combine(repoRoot, "backend", "target", "debug", "backend.exe"),
         };
 
         foreach (var path in candidates)
