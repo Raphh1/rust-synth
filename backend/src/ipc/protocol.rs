@@ -65,6 +65,10 @@ pub enum Command {
         request_id: String,
         enabled: bool,
     },
+    ExportWav {
+        request_id: String,
+        path: String,
+    },
 }
 
 #[derive(Deserialize, Serialize)]

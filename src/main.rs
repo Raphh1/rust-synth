@@ -1,1 +1,0 @@
-use serde::{Serialize, Deserialize}; use serde_json; #[derive(Serialize, Deserialize, Debug)] #[serde(rename_all = "camelCase")] enum Command { SetParam { request_id: String }, } fn main() { let cmd = Command::SetParam { request_id: "test".to_string() }; println!("{}", serde_json::to_string(&cmd).unwrap()); }
