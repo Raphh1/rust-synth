@@ -7,7 +7,7 @@ MASE (Modular Audio Synthesis Engine) est un synthétiseur logiciel monophonique
 ## Lancer l'application
 
 ```bash
-cd UI-rusty-synth/Mase.Ui
+cd frontend
 dotnet run
 ```
 
@@ -24,6 +24,7 @@ La fenêtre principale s'ouvre. Le moteur audio démarre automatiquement.
 | **Play ▶** | Démarre la lecture du pattern |
 | **Stop ⏹** | Arrête la lecture |
 | **Loop ↩** | Active/désactive la boucle |
+| **Export WAV** | Exporte le rendu du pattern en fichier WAV |
 | **BPM** | Tempo (40–250 BPM) — modifiable via le slider, les boutons +/- ou en tapant directement |
 | **Open Piano Roll** | Ouvre le séquenceur dans une fenêtre dédiée |
 | **Engine** | Indicateur d'état (vert = en lecture, rouge = arrêté) |
@@ -90,6 +91,17 @@ Tirer le bord droit de la note pour modifier sa durée.
 
 ---
 
+## Export WAV
+
+1. Composer et régler le pattern comme souhaité
+2. Cliquer **Export WAV** dans la barre de transport
+3. Choisir l'emplacement et le nom du fichier dans le sélecteur
+4. La barre de statut affiche `Exported: <chemin>` en cas de succès
+
+Le rendu est **offline** (non temps-réel) : le backend rejoue le pattern entier sample par sample avec tous les paramètres actifs (waveform, filtre, enveloppe, LFO). Le fichier produit est un WAV mono 16 bits à la fréquence d'échantillonnage du périphérique audio.
+
+---
+
 ## Workflow typique
 
 1. Ouvrir le Piano Roll → placer des notes
@@ -99,3 +111,4 @@ Tirer le bord droit de la note pour modifier sa durée.
 5. Activer Loop si nécessaire
 6. Cliquer **Play ▶**
 7. Ajuster le filtre et le LFO en temps réel pendant la lecture
+8. Cliquer **Export WAV** pour sauvegarder le résultat

@@ -9,6 +9,7 @@ L'utilisateur doit pouvoir :
 - Façonner le timbre sonore (forme d'onde, filtre, enveloppe)
 - Animer le son en temps réel (LFO, portamento)
 - Contrôler la lecture (play, stop, loop, tempo)
+- Exporter le rendu du pattern en fichier WAV
 
 ---
 
@@ -61,6 +62,28 @@ Backend (Rust)
 
 Audio
   → Signal transmis à la carte son via cpal (WASAPI/ALSA)
+```
+
+---
+
+## Flux d'export WAV
+
+```
+Utilisateur
+  → Clique Export WAV
+
+UI (C#)
+  → Ouvre un sélecteur de fichier
+  → Envoie ExportWav { path } (IPC JSON)
+
+Backend (Rust)
+  → Rejoue le Pattern entier en offline (sans thread audio temps-réel)
+  → Applique la même chaîne DSP : oscillateur → enveloppe → filtre → LFO
+  → Écrit les samples en WAV mono 16 bits via hound
+  → Retourne ok ou error { ExportFailed }
+
+UI (C#)
+  → Affiche "Exported: <chemin>" ou "Error: Export failed."
 ```
 
 ---

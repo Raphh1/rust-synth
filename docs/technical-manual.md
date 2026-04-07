@@ -21,7 +21,7 @@ UI C# (Avalonia)          ← présentation uniquement
        ↕ IPC JSON (stdin/stdout)
 Backend Rust
   ├── ipc/               ← protocole + dispatcher (Command Pattern)
-  ├── application/       ← engine (service applicatif, audio cpal)
+  ├── application/       ← engine (service applicatif, audio cpal), export WAV (offline DSP)
   └── domain/
        ├── patch/        ← Aggregate Patch, PatchBuilder, PatchValidator
        ├── sequencing/   ← Aggregate Pattern, Transport (State Pattern)
@@ -49,7 +49,8 @@ rust-synth/
 │   └── src/
 │       ├── main.rs
 │       ├── application/
-│       │   └── engine.rs      # Service applicatif + boucle audio cpal
+│       │   ├── engine.rs      # Service applicatif + boucle audio cpal
+│       │   └── export.rs      # Rendu offline WAV (hound)
 │       ├── domain/
 │       │   ├── patch/
 │       │   │   ├── model.rs   # Aggregate Patch + Builder Pattern
@@ -123,7 +124,7 @@ Communication JSON one-line (NDJSON) sur stdin/stdout du processus backend.
 
 Chaque commande contient un `request_id` ; chaque réponse retourne le même `request_id`.
 
-**Commandes disponibles :** `play`, `stop`, `setParam`, `addNote`, `moveNote`, `resizeNote`, `deleteNote`, `wavetableSet`, `loopToggle`, `patchReplace`, `patchValidate`
+**Commandes disponibles :** `play`, `stop`, `setParam`, `addNote`, `moveNote`, `resizeNote`, `deleteNote`, `wavetableSet`, `loopToggle`, `patchReplace`, `patchValidate`, `exportWav`
 
 **Réponses :** `{"type":"ok","request_id":"..."}` ou `{"type":"error","request_id":"...","code":"...","message":"..."}`
 
@@ -149,6 +150,7 @@ cargo test
 serde       = { version = "1", features = ["derive"] }
 serde_json  = "1.0"
 cpal        = "0.15"
+hound       = "3"
 ```
 
 Frontend C# : `Avalonia`, `CommunityToolkit.Mvvm` (via NuGet).
