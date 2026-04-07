@@ -5,7 +5,7 @@ pub enum TransportState {
 }
 
 impl TransportState {
-    fn play(&mut self) -> Result<(), TransportError> {
+    pub fn play(&mut self) -> Result<(), TransportError> {
         if self.is_playing() {
             Err(TransportError::AlreadyPlaying)
         } else {
@@ -14,7 +14,7 @@ impl TransportState {
         }
     }
 
-    fn stop(&mut self) -> Result<(), TransportError> {
+    pub fn stop(&mut self) -> Result<(), TransportError> {
         if self.is_stopped() {
             Err(TransportError::AlreadyStopped)
         } else {
@@ -23,11 +23,11 @@ impl TransportState {
         }
     }
 
-    fn is_playing(&self) -> bool {
+    pub fn is_playing(&self) -> bool {
         *self == TransportState::Playing
     }
 
-    fn is_stopped(&self) -> bool {
+    pub fn is_stopped(&self) -> bool {
         *self == TransportState::Stopped
     }
 }

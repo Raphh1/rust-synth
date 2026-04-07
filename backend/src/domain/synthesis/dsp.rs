@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 use crate::domain::synthesis::wavetable::Wavetable;
 
 pub trait DspNode: Send {
@@ -64,22 +66,20 @@ impl DspNode for OutputNode {
     }
 }
 
-#[derive(Debug)]
-pub struct DspNode {
+pub struct DspGraphNode {
     pub id: String,
     pub node: Box<dyn DspNode>,
     pub input_ids: Vec<String>,
 }
 
-impl DspNode {
+impl DspGraphNode {
     pub fn new(id: String, node: Box<dyn DspNode>, input_ids: Vec<String>) -> Self {
         Self { id, node, input_ids }
     }
 }
 
-#[derive(Debug)]
 pub struct DspGraph {
-    nodes: Vec<DspGraphNode>,   // ordonnés topologiquement par PatchCompiler
+    nodes: Vec<DspGraphNode>,  // ordonnés topologiquement par PatchCompiler
     buffers: HashMap<String, f64>,  // buffer de sortie par nœud
 }
 
@@ -100,5 +100,5 @@ impl DspGraph {
             node.node.process(&input_values, output_buffer, sample_rate);
         }
         *self.buffers.get("output").unwrap_or(&0.0)
-    } 
+    }
 }
