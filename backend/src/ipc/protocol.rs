@@ -24,7 +24,6 @@ pub enum Command {
     Stop {
         request_id: String,
     },
-    /// name = "filter.cutoff", "envelope.attack", "lfo.rate", etc.
     SetParam {
         request_id: String,
         name: String,

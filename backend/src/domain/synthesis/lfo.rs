@@ -1,4 +1,4 @@
-/// Forme d'onde du LFO
+// 0=sine, 1=square, 2=triangle, 3=saw
 #[derive(Debug, Clone, PartialEq)]
 pub enum LfoShape {
     Sine,
@@ -8,8 +8,6 @@ pub enum LfoShape {
 }
 
 impl LfoShape {
-    /// Depuis la valeur numrique envoye par l'IPC (lfo.shape)
-    /// 0=sine, 1=square, 2=triangle, 3=saw
     pub fn from_f64(v: f64) -> Self {
         match v as u8 {
             1 => LfoShape::Square,
@@ -20,7 +18,7 @@ impl LfoShape {
     }
 }
 
-/// Cible de modulation du LFO
+// 0=cutoff, 1=pitch, 2=volume
 #[derive(Debug, Clone, PartialEq)]
 pub enum LfoTarget {
     Cutoff,
@@ -29,7 +27,6 @@ pub enum LfoTarget {
 }
 
 impl LfoTarget {
-    /// 0=cutoff, 1=pitch, 2=volume
     pub fn from_f64(v: f64) -> Self {
         match v as u8 {
             1 => LfoTarget::Pitch,
@@ -39,17 +36,14 @@ impl LfoTarget {
     }
 }
 
-/// LFO (Low Frequency Oscillator).
-/// Gnre une valeur de modulation [-1.0, 1.0]  chaque tick.
-/// Ne fait PAS partie du DspGraph  il est consult par l'engine
-/// pour moduler les paramtres (cutoff, pitch, volume).
+// Low Frequency Oscillator. Produces a modulation value in [-depth, +depth] per tick.
 #[derive(Debug)]
 pub struct Lfo {
-    rate: f64,    // Hz
-    depth: f64,   // [0.0, 1.0]
+    rate: f64,
+    depth: f64,
     shape: LfoShape,
     pub target: LfoTarget,
-    phase: f64,   // [0.0, 1.0)
+    phase: f64,
 }
 
 impl Lfo {
@@ -59,18 +53,13 @@ impl Lfo {
 
     pub fn set_rate(&mut self, rate: f64)   { self.rate  = rate.max(0.01); }
     pub fn set_depth(&mut self, depth: f64) { self.depth = depth.clamp(0.0, 1.0); }
-    pub fn set_shape(&mut self, shape: LfoShape)   { self.shape  = shape; }
+    pub fn set_shape(&mut self, shape: LfoShape)    { self.shape  = shape; }
     pub fn set_target(&mut self, target: LfoTarget) { self.target = target; }
 
-    /// Avance d'un sample et retourne la valeur de modulation [-depth, +depth].
     pub fn tick(&mut self, sample_rate: f64) -> f64 {
         let value = match self.shape {
-            LfoShape::Sine => {
-                (2.0 * std::f64::consts::PI * self.phase).sin()
-            }
-            LfoShape::Square => {
-                if self.phase < 0.5 { 1.0 } else { -1.0 }
-            }
+            LfoShape::Sine => (2.0 * std::f64::consts::PI * self.phase).sin(),
+            LfoShape::Square => if self.phase < 0.5 { 1.0 } else { -1.0 },
             LfoShape::Triangle => {
                 if self.phase < 0.5 {
                     4.0 * self.phase - 1.0
@@ -78,15 +67,11 @@ impl Lfo {
                     3.0 - 4.0 * self.phase
                 }
             }
-            LfoShape::Saw => {
-                2.0 * self.phase - 1.0
-            }
+            LfoShape::Saw => 2.0 * self.phase - 1.0,
         };
 
         self.phase += self.rate / sample_rate;
-        if self.phase >= 1.0 {
-            self.phase -= 1.0;
-        }
+        if self.phase >= 1.0 { self.phase -= 1.0; }
 
         value * self.depth
     }

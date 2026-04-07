@@ -71,8 +71,8 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
     let mut filter     = FilterNode::new(1000.0, 0.5, sample_rate);
     let mut lfo        = Lfo::new(1.0, 0.5, LfoShape::Sine, LfoTarget::Cutoff);
     let mut portamento = Portamento::new(0.0, 440.0);
-    let mut seq_pos      = 0.0_f64;
-    let mut was_playing  = false; // pour détecter le front montant Play
+    let mut seq_pos     = 0.0_f64;
+    let mut was_playing = false;
 
     let midi_to_hz = |pitch: u8| -> f64 {
         440.0 * 2_f64.powf((pitch as f64 - 69.0) / 12.0)
@@ -103,7 +103,7 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
                 }
             };
 
-            // Mettre  jour les params DSP
+
             envelope.set_attack(snap.env_a);
             envelope.set_decay(snap.env_d);
             envelope.set_sustain(snap.env_s);
@@ -117,7 +117,7 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
             portamento.set_time(snap.port_time);
             osc.set_wavetable(snap.wavetable);
 
-            // Reset seq_pos au début de chaque Play
+
             if snap.is_playing && !was_playing {
                 seq_pos = 0.0;
             }
@@ -134,27 +134,24 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
                     continue;
                 }
 
-                // Séquenceur : trouver la note active
                 let mut gate = 0.0_f64;
                 for note in &snap.notes {
                     if note.start() <= seq_pos && seq_pos < note.start() + note.length() {
                         portamento.set_target(midi_to_hz(note.pitch()));
                         gate = 1.0;
-                        break; // monophonique
+                        break;
                     }
                 }
 
-                // LFO
                 let lfo_val = lfo.tick(sample_rate);
                 let lfo_cutoff_mod = if snap.lfo_target == LfoTarget::Cutoff { lfo_val * 2000.0 } else { 0.0 };
                 let lfo_pitch_mod  = if snap.lfo_target == LfoTarget::Pitch  { lfo_val } else { 0.0 };
                 let lfo_vol_mod    = if snap.lfo_target == LfoTarget::Volume  { lfo_val } else { 0.0 };
 
-                // Fréquence + portamento + modulation pitch LFO
                 let freq = portamento.tick(sample_rate) * 2_f64.powf(lfo_pitch_mod / 12.0);
                 osc.set_frequency(freq);
 
-                // Oscillateur → envelope → filtre → sortie
+
                 let mut osc_out = 0.0;
                 osc.process(&[], &mut osc_out, sample_rate);
 
@@ -170,10 +167,8 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
                 let volume = (1.0 + lfo_vol_mod).clamp(0.0, 1.5);
                 let sample_val = (flt_out * volume) as f32;
 
-                // Écrire le même sample sur tous les canaux (mono → stéréo)
                 for out in frame.iter_mut() { *out = sample_val; }
 
-                // Avancer le séquenceur une seule fois par frame
                 seq_pos += beats_per_sample;
                 if seq_pos >= pattern_len {
                     seq_pos = if snap.loop_enabled { seq_pos - pattern_len } else { pattern_len };
@@ -188,7 +183,7 @@ fn run_audio(state: Arc<Mutex<EngineState>>) -> Result<(), Box<dyn std::error::E
     loop { thread::sleep(std::time::Duration::from_secs(3600)); }
 }
 
-/// Snapshot de l'EngineState pour viter de tenir le Mutex pendant le rendu audio.
+// Snapshot avoids holding the Mutex during audio rendering.
 struct Snapshot {
     is_playing:   bool,
     loop_enabled: bool,

@@ -5,8 +5,7 @@ use crate::domain::synthesis::lfo::{LfoShape, LfoTarget};
 use crate::domain::synthesis::wavetable::Wavetable;
 use crate::ipc::protocol::{Command, ErrorCode, Response};
 
-/// Etat partag entre le dispatcher (thread IPC) et l'engine audio.
-/// Les paramtres DSP sont stocks ici ; l'audio thread les lit  chaque buffer.
+// Shared state between the IPC thread and the audio thread.
 pub struct EngineState {
     pub transport: Transport,
     pub pattern: Pattern,
@@ -59,7 +58,6 @@ impl EngineState {
     }
 }
 
-/// Dispatche une commande IPC vers l'tat du moteur.
 pub fn dispatch(state: &mut EngineState, cmd: Command) -> Response {
     match cmd {
         Command::Play { request_id } => {

@@ -1,18 +1,14 @@
 use crate::domain::synthesis::dsp::DspNode;
 
-/// Filtre biquad low-pass avec rsonance (formule RBJ Audio EQ Cookbook).
-/// input[0] = signal audio
-/// output   = signal filtr
+// Biquad low-pass filter (RBJ Audio EQ Cookbook).
 #[derive(Debug)]
 pub struct FilterNode {
-    cutoff: f64,      // Hz [20, 20000]
-    resonance: f64,   // [0.0, 1.0]  Q [0.5, 20.0]
+    cutoff: f64,    // Hz [20, 20000]
+    resonance: f64, // [0.0, 1.0] mapped to Q [0.5, 20.0]
 
-    // Coefficients biquad
     b0: f64, b1: f64, b2: f64,
     a1: f64, a2: f64,
 
-    // Mmoire du filtre (tats z-1 et z-2)
     x1: f64, x2: f64,
     y1: f64, y2: f64,
 }
@@ -41,10 +37,8 @@ impl FilterNode {
         self.recompute(sample_rate);
     }
 
-    /// Recalcule les coefficients biquad low-pass (RBJ Audio EQ Cookbook).
     fn recompute(&mut self, sample_rate: f64) {
         let cutoff = self.cutoff.clamp(20.0, sample_rate / 2.0 - 1.0);
-        // Rsonance [0,1]  Q [0.5, 20]
         let q = 0.5 + self.resonance * 19.5;
 
         let w0 = 2.0 * std::f64::consts::PI * cutoff / sample_rate;
