@@ -113,3 +113,64 @@ impl std::fmt::Display for TransportError {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn initial_state_is_stopped() {
+        let t = Transport::new();
+        assert!(t.is_stopped());
+        assert!(!t.is_playing());
+    }
+
+    #[test]
+    fn play_transitions_to_playing() {
+        let mut t = Transport::new();
+        assert!(t.play().is_ok());
+        assert!(t.is_playing());
+    }
+
+    #[test]
+    fn stop_transitions_to_stopped() {
+        let mut t = Transport::new();
+        t.play().unwrap();
+        assert!(t.stop().is_ok());
+        assert!(t.is_stopped());
+    }
+
+    #[test]
+    fn double_play_returns_error() {
+        let mut t = Transport::new();
+        t.play().unwrap();
+        assert!(matches!(t.play(), Err(TransportError::AlreadyPlaying)));
+    }
+
+    #[test]
+    fn stop_when_stopped_returns_error() {
+        let mut t = Transport::new();
+        assert!(matches!(t.stop(), Err(TransportError::AlreadyStopped)));
+    }
+
+    #[test]
+    fn set_bpm_valid() {
+        let mut t = Transport::new();
+        assert!(t.set_bpm(140.0).is_ok());
+        assert!((t.bpm() - 140.0).abs() < f64::EPSILON);
+    }
+
+    #[test]
+    fn set_bpm_zero_returns_error() {
+        let mut t = Transport::new();
+        assert!(matches!(t.set_bpm(0.0), Err(TransportError::InvalidBpm)));
+    }
+
+    #[test]
+    fn stop_resets_position() {
+        let mut t = Transport::new();
+        t.play().unwrap();
+        t.stop().unwrap();
+        assert!((t.position() - 0.0).abs() < f64::EPSILON);
+    }
+}

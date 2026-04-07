@@ -100,3 +100,84 @@ impl std::fmt::Display for ValidationError {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::domain::patch::model::{Connection, Module, ModuleKind, PatchBuilder, PortId};
+
+    fn osc_out_patch() -> crate::domain::patch::model::Patch {
+        PatchBuilder::new()
+            .add_module(Module::new("osc1", ModuleKind::Oscillator))
+            .add_module(Module::new("out1", ModuleKind::Output))
+            .add_connection(Connection::new(
+                PortId::new("osc1", "output"),
+                PortId::new("out1", "input"),
+            ))
+            .build()
+            .unwrap()
+    }
+
+    #[test]
+    fn valid_patch_passes() {
+        assert!(PatchValidator::validate(&osc_out_patch()).is_ok());
+    }
+
+    #[test]
+    fn no_output_module_fails() {
+        let patch = PatchBuilder::new()
+            .add_module(Module::new("osc1", ModuleKind::Oscillator))
+            .build()
+            .unwrap();
+        assert!(matches!(
+            PatchValidator::validate(&patch),
+            Err(ValidationError::NoOutputModule)
+        ));
+    }
+
+    #[test]
+    fn multiple_output_modules_fail() {
+        let patch = PatchBuilder::new()
+            .add_module(Module::new("out1", ModuleKind::Output))
+            .add_module(Module::new("out2", ModuleKind::Output))
+            .build()
+            .unwrap();
+        assert!(matches!(
+            PatchValidator::validate(&patch),
+            Err(ValidationError::MultipleOutputModules)
+        ));
+    }
+
+    #[test]
+    fn unknown_module_in_connection_fails() {
+        let patch = PatchBuilder::new()
+            .add_module(Module::new("out1", ModuleKind::Output))
+            .add_connection(Connection::new(
+                PortId::new("ghost", "output"),
+                PortId::new("out1", "input"),
+            ))
+            .build()
+            .unwrap();
+        assert!(matches!(
+            PatchValidator::validate(&patch),
+            Err(ValidationError::UnknownModule(_))
+        ));
+    }
+
+    #[test]
+    fn cycle_detection_fails() {
+        let patch = PatchBuilder::new()
+            .add_module(Module::new("a", ModuleKind::Filter))
+            .add_module(Module::new("b", ModuleKind::Filter))
+            .add_module(Module::new("out1", ModuleKind::Output))
+            .add_connection(Connection::new(PortId::new("a", "out"), PortId::new("b", "in")))
+            .add_connection(Connection::new(PortId::new("b", "out"), PortId::new("a", "in")))
+            .add_connection(Connection::new(PortId::new("b", "out"), PortId::new("out1", "in")))
+            .build()
+            .unwrap();
+        assert!(matches!(
+            PatchValidator::validate(&patch),
+            Err(ValidationError::CycleDetected)
+        ));
+    }
+}
