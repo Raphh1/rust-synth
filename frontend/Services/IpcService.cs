@@ -147,17 +147,13 @@ public class IpcService : IDisposable
     /// Cherche l'exécutable backend selon l'OS et les chemins connus.
     private static string? FindBackendExecutable()
     {
-        // Remonte depuis bin/Debug/net8.0/ jusqu'a la racine du repo
         var baseDir = AppContext.BaseDirectory;
-        var repoRoot = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", ".."));
+        var repoRoot = Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", ".."));
 
         var candidates = new[]
         {
-            // A cote de l'UI (si on copie le .exe manuellement)
             Path.Combine(baseDir, "backend.exe"),
-            // cargo build --release depuis Windows
             Path.Combine(repoRoot, "backend", "target", "release", "backend.exe"),
-            // cargo build (debug) depuis Windows
             Path.Combine(repoRoot, "backend", "target", "debug", "backend.exe"),
         };
 
