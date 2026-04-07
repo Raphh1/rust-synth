@@ -9,7 +9,7 @@ pub trait DspNode: Send {
 #[derive(Debug)]
 pub struct OscillatorNode {
     wavetable: Wavetable,
-    phase: f64, // position actuelle dans le cycle [0.0, 1.0)
+    phase: f64, 
     frequency: f64,
     gain: f64,
 }
